@@ -36,8 +36,8 @@
     /* ডাসবিন আইকন */
     .delete-btn{
       position:absolute;top:10px;right:12px;
-      background:#ff4444;color:#fff;width:36px;height:36px;border-radius:50%;
-      border:none;font-size:18px;cursor:pointer;box-shadow:0 4px 12px rgba(255,68,68,0.4);
+      background:#ff4444;color:#fff;width:38px;height:38px;border-radius:50%;
+      border:none;font-size:20px;cursor:pointer;box-shadow:0 4px 12px rgba(255,68,68,0.4);
       transition:0.3s;display:flex;align-items:center;justify-content:center;
     }
     .delete-btn:hover{background:#cc0000;transform:scale(1.1);}
@@ -50,6 +50,75 @@
     .copyBtn:hover{background:#0066ff;color:#fff;}
     .viewBtn{background:#0066ff;color:#fff;}
     .created{font-size:0.85em;color:#888;margin-top:6px;display:block;}
+
+    /* ফুটার – বামে সারি সারি + মোবাইল ফ্রেন্ডলি */
+    footer{
+      background:#0a1a2f;
+      color:#b0c4de;
+      padding:50px 20px;
+      margin-top:auto;
+    }
+    .footer-content{
+      max-width:1200px;
+      margin:0 auto;
+      display:flex;
+      flex-wrap:wrap;
+      gap:50px;
+      justify-content:flex-start;
+      text-align:left;
+    }
+    .footer-col h4{
+      color:#00ccff;
+      font-size:1.15em;
+      margin-bottom:20px;
+      font-weight:600;
+      position:relative;
+      padding-bottom:10px;
+    }
+    .footer-col h4::after{
+      content:'';
+      position:absolute;
+      left:0;bottom:0;
+      width:45px;height:3px;
+      background:#0066ff;
+      border-radius:2px;
+    }
+    .footer-col a{
+      color:#b0c4de;
+      text-decoration:none;
+      display:block;
+      margin:12px 0;
+      font-size:0.98em;
+      transition:0.3s;
+    }
+    .footer-col a:hover{
+      color:#fff;
+      padding-left:10px;
+    }
+    .telegram-link{
+      background:#0088cc;
+      color:#fff !important;
+      padding:10px 22px;
+      border-radius:10px;
+      display:inline-block;
+      margin-top:10px;
+      font-weight:600;
+    }
+    .copyright{
+      width:100%;
+      text-align:center;
+      margin-top:40px;
+      padding-top:25px;
+      border-top:1px solid #1e2a44;
+      color:#8899aa;
+      font-size:0.9em;
+    }
+
+    @media (max-width:768px){
+      .footer-content{justify-content:center;gap:35px;}
+      .footer-col{text-align:center;}
+      .footer-col h4::after{left:50%;transform:translateX(-50%);}
+    }
   </style>
 </head>
 <body>
@@ -67,6 +136,37 @@
     <div id="linksList"></div>
   </div>
 </main>
+
+<!-- ফুটার – বামে সারি সারি -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-col">
+      <h4>Get More Free Services</h4>
+      <a href="#">Number Location Tracker</a>
+      <a href="#">CALL/SMS Bomber</a>
+      <a href="#">Company</a>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="#">About Us</a>
+      <a href="#">Contact</a>
+      <a href="#">FAQ</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal Pages</h4>
+      <a href="#">Terms of Use</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Disclaimer</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="https://t.me/yourchannel" target="_blank" class="telegram-link">Telegram Support</a>
+    </div>
+  </div>
+  <div class="copyright">
+    © 2025 Webcam 360. All rights reserved
+  </div>
+</footer>
 
 <script>
 const firebaseConfig = {
@@ -111,7 +211,7 @@ linksRef.on('value', (snap) => {
   const container = document.getElementById("linksList");
 
   if (!data || Object.keys(data).length === 0) {
-    container.innerHTML = ""; // কোনো মেসেজ দেখাবে না
+    container.innerHTML = "";
     return;
   }
 
@@ -122,7 +222,14 @@ linksRef.on('value', (snap) => {
 
     html += `
       <div class="link-item">
-        <button class="delete-btn" onclick="deleteLink('${id}')">Trash</button>
+        <button class="delete-btn" onclick="deleteLink('${id}')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+        </button>
         <div class="link-id">ID: ${id}</div>
         <div class="link-url">${item.url}</div>
         <div class="link-actions">
